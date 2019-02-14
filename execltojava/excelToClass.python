@@ -1,0 +1,150 @@
+#coding=utf-8
+#######################################################
+#filename:test_xlrd.py
+#author:defias
+#date:xxxx-xx-xx
+#function：读excel文件中的数据
+#######################################################
+import xlrd
+from mako.template import Template
+from mako.runtime import Context
+from io import StringIO
+import os
+
+class Field(object):
+
+    def __init__(self, name, comment, type):
+        self.name = name
+        self.comment = comment
+        self.type = type
+
+def convert(one_string, space_character, firstUpower = False):    #one_string:输入的字符串；space_character:字符串的间隔符，以其做为分隔标志
+	string_list = str(one_string).split(space_character)    #将字符串转化为list
+	if not firstUpower:
+		first = string_list[0].lower()
+	else:
+		first = string_list[0].capitalize()
+	# print(first)
+	others = string_list[1:] 
+	others_capital = [word.capitalize() for word in others]      #str.capitalize():将字符串的首字母转化为大写
+	others_capital[0:0] = [first]
+	hump_string = ''.join(others_capital)     #将list组合成为字符串，中间无连接符。
+	return hump_string
+
+def write_java_file(class_name,class_comment,fields,hasId,module_name):
+
+	if not os.path.exists('./entity/' + module_name + '/'):
+		os.mkdir('./entity/' + module_name + '/')
+	if not os.path.exists('./mapper/' + module_name + '/'):
+		os.mkdir('./mapper/' + module_name + '/')
+
+	mapperTemplate = Template(filename='/data/Develop/workspace/python/entity.tl')
+	buf = StringIO()
+	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=hasId,module_name=module_name)
+	mapperTemplate.render_context(ctx)
+	# print(buf.getvalue())
+	f = open('./entity/' + module_name + '/'+class_name+'DO.java', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
+	mapperTemplate = Template(filename='/data/Develop/workspace/python/mapper.tl')
+	buf = StringIO()
+	ctx = Context(buf, class_name=class_name, entity_name=class_name+"DO", module_name=module_name)
+	mapperTemplate.render_context(ctx)
+	# print(buf.getvalue())
+	f = open('./mapper/'+ module_name + '/' +class_name+'Mapper.java', 'w')
+	f.write(buf.getvalue())
+	f.close()
+#打开一个workbook
+workbook = xlrd.open_workbook('/data/Develop/workspace/python/数据结构.xlsx')
+#抓取所有sheet页的名称
+worksheets = workbook.sheet_names()
+print('worksheets is %s' %worksheets)
+
+for sheet_name in worksheets:
+	print(sheet_name)
+	module_name = sheet_name
+	worksheet = workbook.sheet_by_name(sheet_name)
+	num_rows = worksheet.nrows
+	num_cols = worksheet.ncols
+	#遍历sheet1中所有单元格cell
+	for rown in range(1, num_rows): 
+		if len(worksheet.cell_value(rown,1)) > 0:
+			fields = []
+			hasId = False
+			class_name = convert(worksheet.cell_value(rown,1).split("\n")[1],"_",True) 
+			class_comment = worksheet.cell_value(rown,1).split("\n")[0]
+			# class_str = class_str + class_name + "DO" + " extends AbstractEntity { \n"
+		# for coln in range(3,4):
+		cell = worksheet.cell_value(rown,3)
+		if len(cell.strip()) <= 0:
+			continue
+		cell_type = worksheet.cell_value(rown,4)
+		filed_type = " Object "
+		if "VARCHAR" in cell_type:
+			filed_type = " String "
+		elif "TINYINT" in cell_type:
+			filed_type = " Byte "
+		elif "DATETIME" in cell_type:
+			filed_type = " LocalDateTime "
+		elif "DECIMAL" in cell_type:
+			filed_type = " BigDecimal "
+		elif "INT" in cell_type:
+			filed_type = " Integer "
+		# if cell not in ["id","gmt_created","gmt_modified"]:
+			# fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type ))
+		fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type ))
+
+		# if cell in "id" :
+		# 	hasId = True
+		try:
+			print(rown,num_rows)
+			if len(worksheet.cell_value(rown+1,1)) > 0:
+				write_java_file(class_name,class_comment,fields,hasId,module_name)
+		except IndexError as e:
+			print('IndexError:', e)
+
+	write_java_file(class_name,class_comment,fields,hasId,module_name)
+
+
+#定位到sheet1
+# worksheet = workbook.sheet_by_name(u'mall')
+"""
+#通过索引顺序获取
+worksheet = workbook.sheets()[0]
+#或
+worksheet = workbook.sheet_by_index(0)
+"""
+# num_rows = worksheet.nrows
+# num_cols = worksheet.ncols
+"""
+#遍历所有sheet对象
+for worksheet_name in worksheets:
+worksheet = workbook.sheet_by_name(worksheet_name)
+
+#遍历sheet1中所有行row
+
+for curr_row in range(num_rows):
+	row = worksheet.row_values(curr_row)
+	print('row%s is %s' %(curr_row,row))
+#遍历sheet1中所有列col
+
+for curr_col in range(num_cols):
+	col = worksheet.col_values(curr_col)
+	print('col%s is %s' %(curr_col,col))
+"""
+
+"""
+#其他写法：
+cell = worksheet.cell(rown,coln).value
+print cell
+#或
+cell = worksheet.row(rown)[coln].value
+print cell
+#或
+cell = worksheet.col(coln)[rown].value
+print cell
+#获取单元格中值的类型，类型 0 empty,1 string, 2 number, 3 date, 4 boolean, 5 error
+cell_type = worksheet.cell_type(rown,coln)
+print cell_type
+"""
