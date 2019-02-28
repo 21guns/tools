@@ -94,7 +94,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name):
 	if hasId :
 		mapperTemplate = Template(filename='./Service.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"CommandService", module_name=module_name)
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"Service", module_name=module_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service
@@ -106,7 +106,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name):
 
 		mapperTemplate = Template(filename='./ServiceImpl.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"CommandServiceImpl", module_name=module_name)
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"ServiceImpl", module_name=module_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service+'impl/'
@@ -124,9 +124,9 @@ worksheets = workbook.sheet_names()
 print('worksheets is %s' %worksheets)
 
 for sheet_name in worksheets:
-	print(sheet_name)
 	if sheet_name in ['user']:
 		continue
+	print(sheet_name)
 	module_name = sheet_name
 	worksheet = workbook.sheet_by_name(sheet_name)
 	num_rows = worksheet.nrows
