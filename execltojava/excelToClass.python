@@ -31,47 +31,114 @@ def convert(one_string, space_character, firstUpower = False):    #one_string:�
 	hump_string = ''.join(others_capital)     #将list组合成为字符串，中间无连接符。
 	return hump_string
 
-def write_java_file(class_name,class_comment,fields,hasId,module_name):
+def write_java_file(class_name,class_comment,fields,field_names,module_name):
+	# workspace_root='./code/'
+	workspace_root='/Volumes/data/Develop/workspace/sft/'
+	java_src = '/src/main/java'
 
-	if not os.path.exists('./entity/' + module_name + '/'):
-		os.mkdir('./entity/' + module_name + '/')
-	if not os.path.exists('./mapper/' + module_name + '/'):
-		os.mkdir('./mapper/' + module_name + '/')
+	hasId = False
+	if 'id' in field_names :	
+		hasId = True
+	api = workspace_root + module_name+'/api'+java_src+'/com/sifangting/'+module_name+'/api/'
+	service = workspace_root + module_name+'/service'+java_src+'/com/sifangting/'+module_name+'/service/'
+	admin_contoller = workspace_root + module_name+'/admin-controller'+java_src+'/com/sifangting/'+module_name+'/admin/'
+	contoller = workspace_root + module_name+'/controller'+java_src+'/com/sifangting/'+module_name+'/'
 
-	mapperTemplate = Template(filename='/data/Develop/workspace/python/entity.tl')
+	# if not os.path.exists(api):
+	# 	os.makedirs(api+'dto/')
+	# if not os.path.exists(service):
+	# 	os.makedirs(service+'entity/')
+	# 	os.makedirs(service+'service/impl')
+	# 	os.makedirs(service+'repository/mapper/')
+	# if not os.path.exists(admin_contoller):
+	# 	os.makedirs(admin_contoller)
+	# if not os.path.exists(contoller):
+	# 	os.makedirs(contoller)
+
+	mapperTemplate = Template(filename='./entity.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=hasId,module_name=module_name)
+	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
-	f = open('./entity/' + module_name + '/'+class_name+'DO.java', 'w')
+	entity_dir = service+'entity/'
+	if not os.path.exists(entity_dir):
+		os.makedirs(entity_dir)
+	f = open(entity_dir + class_name+'DO.java', 'w')
 	f.write(buf.getvalue())
 	f.close()
 
-	mapperTemplate = Template(filename='/data/Develop/workspace/python/mapper.tl')
+	mapperTemplate = Template(filename='./mapper.tl')
 	buf = StringIO()
 	ctx = Context(buf, class_name=class_name, entity_name=class_name+"DO", module_name=module_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
-	f = open('./mapper/'+ module_name + '/' +class_name+'Mapper.java', 'w')
+	mapper_dir = service+'repository/mapper/'
+	if not os.path.exists(mapper_dir):
+		os.makedirs(mapper_dir)
+	f = open(mapper_dir +class_name+'Mapper.java', 'w')
 	f.write(buf.getvalue())
 	f.close()
+
+	mapperTemplate = Template(filename='./dto.tl')
+	buf = StringIO()
+	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name)
+	mapperTemplate.render_context(ctx)
+	# print(buf.getvalue())
+	dto_dir = api+'dto/'
+	if not os.path.exists(dto_dir):
+		os.makedirs(dto_dir)
+	f = open(dto_dir + class_name+'DTO.java', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
+	if hasId :
+		mapperTemplate = Template(filename='./Service.tl')
+		buf = StringIO()
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"CommandService", module_name=module_name)
+		mapperTemplate.render_context(ctx)
+		# print(buf.getvalue())
+		service_dir = service
+		if not os.path.exists(service_dir):
+			os.makedirs(service_dir)
+		f = open(service_dir + class_name+'Service.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
+
+		mapperTemplate = Template(filename='./ServiceImpl.tl')
+		buf = StringIO()
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"CommandServiceImpl", module_name=module_name)
+		mapperTemplate.render_context(ctx)
+		# print(buf.getvalue())
+		service_dir = service+'impl/'
+		if not os.path.exists(service_dir):
+			os.makedirs(service_dir)
+		f = open(service_dir + class_name+'ServiceImpl.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
+
+
 #打开一个workbook
-workbook = xlrd.open_workbook('/data/Develop/workspace/python/数据结构.xlsx')
+workbook = xlrd.open_workbook('./数据结构.xlsx')
 #抓取所有sheet页的名称
 worksheets = workbook.sheet_names()
 print('worksheets is %s' %worksheets)
 
 for sheet_name in worksheets:
 	print(sheet_name)
+	if sheet_name in ['user']:
+		continue
 	module_name = sheet_name
 	worksheet = workbook.sheet_by_name(sheet_name)
 	num_rows = worksheet.nrows
 	num_cols = worksheet.ncols
+	fields = []
+	field_names = []
 	#遍历sheet1中所有单元格cell
 	for rown in range(1, num_rows): 
+
 		if len(worksheet.cell_value(rown,1)) > 0:
 			fields = []
-			hasId = False
+			field_names = []
 			class_name = convert(worksheet.cell_value(rown,1).split("\n")[1],"_",True) 
 			class_comment = worksheet.cell_value(rown,1).split("\n")[0]
 			# class_str = class_str + class_name + "DO" + " extends AbstractEntity { \n"
@@ -94,17 +161,15 @@ for sheet_name in worksheets:
 		# if cell not in ["id","gmt_created","gmt_modified"]:
 			# fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type ))
 		fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type ))
-
-		# if cell in "id" :
-		# 	hasId = True
+		field_names.append(convert(cell,"_"))
 		try:
-			print(rown,num_rows)
+			# print(rown,num_rows)
 			if len(worksheet.cell_value(rown+1,1)) > 0:
-				write_java_file(class_name,class_comment,fields,hasId,module_name)
+				write_java_file(class_name,class_comment,fields,field_names,module_name)
 		except IndexError as e:
 			print('IndexError:', e)
 
-	write_java_file(class_name,class_comment,fields,hasId,module_name)
+	write_java_file(class_name,class_comment,fields,field_names,module_name)
 
 
 #定位到sheet1

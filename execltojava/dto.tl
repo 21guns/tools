@@ -37,9 +37,9 @@ import java.util.Objects;
 @Getter
 
 % if hasId:
-public class ${class_name}DO extends AbstractEntity {
+public class ${class_name}DTO extends AbstractEntity {
 % else:
-public class ${class_name}DO implements Serializable {
+public class ${class_name}DTO implements Serializable {
 % endif 
 
 	% for a in fields:
