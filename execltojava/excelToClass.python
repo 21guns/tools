@@ -92,27 +92,64 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name):
 	f.close()
 
 	if hasId :
-		mapperTemplate = Template(filename='./Service.tl')
+		mapperTemplate = Template(filename='./commandService.tl')
 		buf = StringIO()
 		ctx = Context(buf, class_name=class_name, entity_name=class_name+"Service", module_name=module_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
-		service_dir = service
+		service_dir = service + 'command/'
 		if not os.path.exists(service_dir):
 			os.makedirs(service_dir)
-		f = open(service_dir + class_name+'Service.java', 'w')
+		f = open(service_dir + class_name+'CommandService.java', 'w')
 		f.write(buf.getvalue())
 		f.close()
 
-		mapperTemplate = Template(filename='./ServiceImpl.tl')
+		mapperTemplate = Template(filename='./commandServiceImpl.tl')
 		buf = StringIO()
 		ctx = Context(buf, class_name=class_name, entity_name=class_name+"ServiceImpl", module_name=module_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
-		service_dir = service+'impl/'
+		service_dir = service+'command/impl/'
 		if not os.path.exists(service_dir):
 			os.makedirs(service_dir)
-		f = open(service_dir + class_name+'ServiceImpl.java', 'w')
+		f = open(service_dir + class_name+'CommandServiceImpl.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
+
+		mapperTemplate = Template(filename='./queryService.tl')
+		buf = StringIO()
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name)
+		mapperTemplate.render_context(ctx)
+		# print(buf.getvalue())
+		service_dir = service + 'query/'
+		if not os.path.exists(service_dir):
+			os.makedirs(service_dir)
+		f = open(service_dir + class_name+'QueryService.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
+
+		mapperTemplate = Template(filename='./queryServiceImpl.tl')
+		buf = StringIO()
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name)
+		mapperTemplate.render_context(ctx)
+		# print(buf.getvalue())
+		service_dir = service+'query/impl/'
+		if not os.path.exists(service_dir):
+			os.makedirs(service_dir)
+		f = open(service_dir + class_name+'QueryServiceImpl.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
+
+
+		mapperTemplate = Template(filename='./adminController.tl')
+		buf = StringIO()
+		ctx = Context(buf, class_name=class_name, rest_url=class_name.lower(), module_name=module_name)
+		mapperTemplate.render_context(ctx)
+		# print(buf.getvalue())
+		service_dir = admin_contoller+'controller/'
+		if not os.path.exists(service_dir):
+			os.makedirs(service_dir)
+		f = open(service_dir + class_name+'AdminController.java', 'w')
 		f.write(buf.getvalue())
 		f.close()
 
