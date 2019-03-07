@@ -19,8 +19,8 @@ public class ${class_name}AdminController {
     @Autowired
 	private ${class_name}QueryService queryService;
 
-    public MessageResult<${class_name}DTO> pages(${class_name}DTO dto, PagerParams pagerParams) {
+    public MessageResult<${class_name}DTO> page(${class_name}DTO dto, PagerParams pagerParams) {
 
-		return MessageResult.successPage(queryService.pages(dto, pagerParams));   
+		return MessageResult.successPage(queryService.page(dto, pagerParams));   
 	} 
 }

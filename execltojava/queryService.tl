@@ -8,7 +8,7 @@ import com.sifangting.common.web.PagerParams;
 
 public interface ${class_name}QueryService {
 
-    List<${entity_name}> pages(${entity_name} dto, PagerParams pagerParams);
+    List<${entity_name}> page(${entity_name} dto, PagerParams pagerParams);
 
     Optional<${entity_name}> get${class_name}ById(String id);
 }

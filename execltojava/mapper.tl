@@ -9,5 +9,5 @@ import com.sifangting.${module_name}.service.entity.${entity_name};
 
 public interface ${class_name}Mapper extends BaseMapper<${entity_name}> {
 
-    List<${entity_name}> pages(@Param("query") ${entity_name} queryDTO, @Param("pageNum") int pageNum, @Param("pageSize") int pageSize);
+    List<${entity_name}> page(@Param("query") ${entity_name} queryDTO, @Param("pageNum") int pageNum, @Param("pageSize") int pageSize);
 }

@@ -23,9 +23,9 @@ public class ${class_name}QueryServiceImpl implements ${class_name}QueryService 
 	private ${class_name}Mapper mapper;
 
     @Override
-    public List<${entity_name}> pages(${entity_name} dto, PagerParams pagerParams) {
+    public List<${entity_name}> page(${entity_name} dto, PagerParams pagerParams) {
         ${class_name}DO doo = AssemblerFactory.to(dto, ${class_name}DO.class);
-    	List dos = mapper.pages(doo, pagerParams.getPage(), pagerParams.getPageSize());
+    	List dos = mapper.page(doo, pagerParams.getPage(), pagerParams.getPageSize());
     	CollectionUtils.replaceAll(dos, ddo->AssemblerFactory.to(ddo, ${entity_name}.class));
     	return dos;
     }
