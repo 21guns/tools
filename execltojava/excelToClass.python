@@ -176,6 +176,7 @@ for sheet_name in worksheets:
 		if len(worksheet.cell_value(rown,1)) > 0:
 			fields = []
 			field_names = []
+			# print(worksheet.cell_value(rown,1))
 			class_name = convert(worksheet.cell_value(rown,1).split("\n")[1],"_",True) 
 			class_comment = worksheet.cell_value(rown,1).split("\n")[0]
 			# class_str = class_str + class_name + "DO" + " extends AbstractEntity { \n"
@@ -184,6 +185,7 @@ for sheet_name in worksheets:
 		if len(cell.strip()) <= 0:
 			continue
 		cell_type = worksheet.cell_value(rown,4)
+		# print(cell_type)
 		filed_type = " Object "
 		if "VARCHAR" in cell_type:
 			filed_type = " String "
@@ -193,8 +195,10 @@ for sheet_name in worksheets:
 			filed_type = " LocalDateTime "
 		elif "DECIMAL" in cell_type:
 			filed_type = " BigDecimal "
-		elif "INT" in cell_type:
+		elif "INT" == cell_type:
 			filed_type = " Integer "
+		elif "BIGINT UNSIGNED" == cell_type:
+			filed_type = " Long "
 		# if cell not in ["id","gmt_created","gmt_modified"]:
 			# fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type ))
 		fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type ))
