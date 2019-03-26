@@ -5,6 +5,7 @@ import com.guns21.data.domain.result.MessageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 import lombok.extern.slf4j.Slf4j;
 
 import com.sifangting.${module_name}.service.query.${class_name}QueryService;
@@ -19,6 +20,7 @@ public class ${class_name}AdminController {
     @Autowired
 	private ${class_name}QueryService queryService;
 
+	@GetMapping("/page")
     public MessageResult<${class_name}DTO> page(${class_name}DTO dto, PagerParams pagerParams) {
 
 		return MessageResult.successPage(queryService.page(dto, pagerParams));   

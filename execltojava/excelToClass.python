@@ -13,10 +13,12 @@ import os
 
 class Field(object):
 
-    def __init__(self, name, comment, type):
+    def __init__(self, name, comment, type, note):
         self.name = name
         self.comment = comment
         self.type = type
+        self.note = note
+
 
 def convert(one_string, space_character, firstUpower = False):    #one_string:输入的字符串；space_character:字符串的间隔符，以其做为分隔标志
 	string_list = str(one_string).split(space_character)    #将字符串转化为list
@@ -54,6 +56,32 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name):
 	# 	os.makedirs(admin_contoller)
 	# if not os.path.exists(contoller):
 	# 	os.makedirs(contoller)
+
+	for field in fields:
+		if field.name in ['type','status']:
+			enums = []
+			string_list = str(field.note).split('、')
+			if len(string_list) > 0:
+				for n in string_list:
+					# if  len(n) >0:
+					string_list = str(n).split('：')
+					if len(string_list) ==2: 
+						enums.append(Field(string_list[0], string_list[1], '', ''))
+					else:
+						print(string_list)
+
+			enum_class_name = class_name+field.name[0].upper() + field.name[1:]
+			mapperTemplate = Template(filename='./enum.tl')
+			buf = StringIO()
+			ctx = Context(buf, class_name=enum_class_name, class_comment=class_comment, enums=enums,module_name=module_name)
+			mapperTemplate.render_context(ctx)
+			# print(buf.getvalue())
+			dto_dir = api+'enums/'
+			if not os.path.exists(dto_dir):
+				os.makedirs(dto_dir)
+			f = open(dto_dir + enum_class_name+'Enum.java', 'w')
+			f.write(buf.getvalue())
+			f.close()
 
 	mapperTemplate = Template(filename='./entity.tl')
 	buf = StringIO()
@@ -201,7 +229,7 @@ for sheet_name in worksheets:
 			filed_type = " Long "
 		# if cell not in ["id","gmt_created","gmt_modified"]:
 			# fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type ))
-		fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type ))
+		fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type, worksheet.cell_value(rown,10) ))
 		field_names.append(convert(cell,"_"))
 		try:
 			# print(rown,num_rows)

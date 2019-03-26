@@ -45,6 +45,7 @@ public class ${class_name}DO implements Serializable {
 	% for a in fields:
 	/**
  	 * ${a.comment}
+ 	 * ${a.note}
 	 */
 	private ${a.type} ${a.name};
 
