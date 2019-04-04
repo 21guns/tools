@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import javax.persistence.Table;
 
 /**
  * ${class_comment}
@@ -39,6 +40,7 @@ import java.util.Objects;
 % if hasId:
 public class ${class_name}DO extends AbstractEntity {
 % else:
+@Table(name = "${table_name}")
 public class ${class_name}DO implements Serializable {
 % endif 
 

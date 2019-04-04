@@ -33,10 +33,12 @@ def convert(one_string, space_character, firstUpower = False):    #one_string:�
 	hump_string = ''.join(others_capital)     #将list组合成为字符串，中间无连接符。
 	return hump_string
 
-def write_java_file(class_name,class_comment,fields,field_names,module_name):
+def write_java_file(class_name,class_comment,fields,field_names,module_name,table_name):
 	# workspace_root='./code/'
 	workspace_root='/Volumes/data/Develop/workspace/sft/'
 	java_src = '/src/main/java'
+	resource_src = '/src/main/resources/'
+
 
 	hasId = False
 	if 'id' in field_names :	
@@ -46,6 +48,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name):
 	admin_contoller = workspace_root + module_name+'/admin-controller'+java_src+'/com/sifangting/'+module_name+'/admin/'
 	contoller = workspace_root + module_name+'/controller'+java_src+'/com/sifangting/'+module_name+'/'
 
+	service_resource = workspace_root + module_name+'/service'+resource_src
 	# if not os.path.exists(api):
 	# 	os.makedirs(api+'dto/')
 	# if not os.path.exists(service):
@@ -85,7 +88,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name):
 
 	mapperTemplate = Template(filename='./entity.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name)
+	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name,table_name=table_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
 	entity_dir = service+'entity/'
@@ -107,6 +110,20 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name):
 	f.write(buf.getvalue())
 	f.close()
 
+
+	mapperTemplate = Template(filename='./mapperXml.tl')
+	buf = StringIO()
+	ctx = Context(buf, class_name=class_name, module_name=module_name)
+	mapperTemplate.render_context(ctx)
+	# print(buf.getvalue())
+	mapper_dir = service_resource+'mapper/'
+	if not os.path.exists(mapper_dir):
+		os.makedirs(mapper_dir)
+	f = open(mapper_dir +class_name+'Mapper.xml', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
+
 	mapperTemplate = Template(filename='./dto.tl')
 	buf = StringIO()
 	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name)
@@ -122,7 +139,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name):
 	if hasId :
 		mapperTemplate = Template(filename='./commandService.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"Service", module_name=module_name)
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service + 'command/'
@@ -134,7 +151,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name):
 
 		mapperTemplate = Template(filename='./commandServiceImpl.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"ServiceImpl", module_name=module_name)
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service+'command/impl/'
@@ -198,6 +215,7 @@ for sheet_name in worksheets:
 	num_cols = worksheet.ncols
 	fields = []
 	field_names = []
+	table_name = ''
 	#遍历sheet1中所有单元格cell
 	for rown in range(1, num_rows): 
 
@@ -205,7 +223,8 @@ for sheet_name in worksheets:
 			fields = []
 			field_names = []
 			# print(worksheet.cell_value(rown,1))
-			class_name = convert(worksheet.cell_value(rown,1).split("\n")[1],"_",True) 
+			table_name = worksheet.cell_value(rown,1).split("\n")[1]
+			class_name = convert(table_name,"_",True) 
 			class_comment = worksheet.cell_value(rown,1).split("\n")[0]
 			# class_str = class_str + class_name + "DO" + " extends AbstractEntity { \n"
 		# for coln in range(3,4):
@@ -234,11 +253,11 @@ for sheet_name in worksheets:
 		try:
 			# print(rown,num_rows)
 			if len(worksheet.cell_value(rown+1,1)) > 0:
-				write_java_file(class_name,class_comment,fields,field_names,module_name)
+				write_java_file(class_name,class_comment,fields,field_names,module_name,table_name)
 		except IndexError as e:
 			print('IndexError:', e)
 
-	write_java_file(class_name,class_comment,fields,field_names,module_name)
+	write_java_file(class_name,class_comment,fields,field_names,module_name,table_name)
 
 
 #定位到sheet1
