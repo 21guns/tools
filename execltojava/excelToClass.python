@@ -13,11 +13,21 @@ import os
 
 class Field(object):
 
-    def __init__(self, name, comment, type, note):
+    def __init__(self, name, comment, type, field, jdbcType, note):
         self.name = name
         self.comment = comment
         self.type = type
+        self.field = field
         self.note = note
+
+        self.jdbcType = jdbcType
+        if (jdbcType == "INT") :
+        	self.jdbcType = "INTEGER"
+        elif (jdbcType == "BIGINT UNSIGNED"):
+        	self.jdbcType = "BIGINT"
+        elif (jdbcType == "DATETIME"):
+        	self.jdbcType = "TIMESTAMP"
+
 
 
 def convert(one_string, space_character, firstUpower = False):    #one_string:输入的字符串；space_character:字符串的间隔符，以其做为分隔标志
@@ -69,7 +79,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 					# if  len(n) >0:
 					string_list = str(n).split('：')
 					if len(string_list) ==2: 
-						enums.append(Field(string_list[0], string_list[1], '', ''))
+						enums.append(Field(string_list[0], string_list[1], '', '','', ''))
 					else:
 						print(string_list)
 
@@ -113,10 +123,10 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 
 	mapperTemplate = Template(filename='./mapperXml.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, module_name=module_name)
+	ctx = Context(buf, class_name=class_name, module_name=module_name,fields=fields, table_name=table_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
-	mapper_dir = service_resource+'mapper/'
+	mapper_dir = service_resource+'/com/sifangting/'+module_name+'/service/repository/mapper/'
 	if not os.path.exists(mapper_dir):
 		os.makedirs(mapper_dir)
 	f = open(mapper_dir +class_name+'Mapper.xml', 'w')
@@ -188,7 +198,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 
 		mapperTemplate = Template(filename='./adminController.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, rest_url=class_name.lower(), module_name=module_name)
+		ctx = Context(buf, class_name=class_name, rest_url=class_name.lower(), module_name=module_name, class_comment=class_comment,)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = admin_contoller+'controller/'
@@ -233,22 +243,28 @@ for sheet_name in worksheets:
 			continue
 		cell_type = worksheet.cell_value(rown,4)
 		# print(cell_type)
-		filed_type = " Object "
+		filed_type = "Object"
 		if "VARCHAR" in cell_type:
-			filed_type = " String "
+			filed_type = "String"
 		elif "TINYINT" in cell_type:
-			filed_type = " Byte "
+			filed_type = "Byte"
 		elif "DATETIME" in cell_type:
-			filed_type = " LocalDateTime "
+			filed_type = "LocalDateTime"
+		elif "DATE" in cell_type:
+			filed_type = "LocalDate"
 		elif "DECIMAL" in cell_type:
-			filed_type = " BigDecimal "
+			filed_type = "BigDecimal"
 		elif "INT" == cell_type:
-			filed_type = " Integer "
+			filed_type = "Integer"
+		elif "INT(11)" == cell_type:
+			filed_type = "Integer"
 		elif "BIGINT UNSIGNED" == cell_type:
-			filed_type = " Long "
+			filed_type = "Long"
+		else:
+			print(table_name, cell, filed_type, cell_type)
 		# if cell not in ["id","gmt_created","gmt_modified"]:
 			# fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type ))
-		fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type, worksheet.cell_value(rown,10) ))
+		fields.append(Field(convert(cell,"_"), worksheet.cell_value(rown,2), filed_type, cell, cell_type.split('(')[0], worksheet.cell_value(rown,10) ))
 		field_names.append(convert(cell,"_"))
 		try:
 			# print(rown,num_rows)

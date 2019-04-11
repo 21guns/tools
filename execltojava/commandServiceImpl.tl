@@ -10,6 +10,8 @@ import com.sifangting.${module_name}.service.entity.${class_name}DO;
 import com.sifangting.${module_name}.service.command.${class_name}CommandService;
 import com.sifangting.${module_name}.service.repository.mapper.${class_name}Mapper;
 
+import java.util.Objects;
+
 @Service
 @Slf4j
 public class ${class_name}CommandServiceImpl implements ${class_name}CommandService {
@@ -20,6 +22,9 @@ public class ${class_name}CommandServiceImpl implements ${class_name}CommandServ
 	@Override
 	public 	void save(${entity_name} dto) {
 	    ${class_name}DO doo = AssemblerFactory.to(dto, ${class_name}DO.class);
-		mapper.insert(doo);
-	}
+		if (Objects.isNull(dto.getId())) {
+			mapper.insert(doo);
+		} else {
+			mapper.update(doo);
+		}	}
 }

@@ -25,16 +25,15 @@ public class ${class_name}QueryServiceImpl implements ${class_name}QueryService 
     @Override
     public List<${entity_name}> page(${entity_name} dto, PagerParams pagerParams) {
         ${class_name}DO doo = AssemblerFactory.to(dto, ${class_name}DO.class);
-    	List dos = mapper.page(doo, pagerParams.getPage(), pagerParams.getPageSize());
+    	List dos = mapper.pageList(doo, pagerParams.getPage(), pagerParams.getPageSize());
     	CollectionUtils.replaceAll(dos, ddo->AssemblerFactory.to(ddo, ${entity_name}.class));
     	return dos;
     }
 
     @Override
     public Optional<${entity_name}> get${class_name}ById(String id) {
-        ${class_name}DO doo = mapper.selectByPrimaryKey(id);
-        ${class_name}DTO dto = AssemblerFactory.to(doo, ${class_name}DTO.class);
-        return Optional.ofNullable(dto);
+        ${class_name}DO doo = mapper.selectById(id);
+        return AssemblerFactory.toOptional(doo, ${class_name}DTO.class);
     }
 
 
