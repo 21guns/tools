@@ -1,4 +1,4 @@
-package com.sifangting.${module_name}.service.command;
+package com.${package_name}.${module_name}.service.command;
 
 public interface ${class_name}CommandService {
 

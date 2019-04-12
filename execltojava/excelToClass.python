@@ -48,15 +48,15 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 	workspace_root='/Volumes/data/Develop/workspace/sft/'
 	java_src = '/src/main/java'
 	resource_src = '/src/main/resources/'
-
+	package_name = 'sifangting'
 
 	hasId = False
 	if 'id' in field_names :	
 		hasId = True
-	api = workspace_root + module_name+'/api'+java_src+'/com/sifangting/'+module_name+'/api/'
-	service = workspace_root + module_name+'/service'+java_src+'/com/sifangting/'+module_name+'/service/'
-	admin_contoller = workspace_root + module_name+'/admin-controller'+java_src+'/com/sifangting/'+module_name+'/admin/'
-	contoller = workspace_root + module_name+'/controller'+java_src+'/com/sifangting/'+module_name+'/'
+	api = workspace_root + module_name+'/api'+java_src+'/com/'+package_name+'/'+module_name+'/api/'
+	service = workspace_root + module_name+'/service'+java_src+'/com/'+package_name+'/'+module_name+'/service/'
+	admin_contoller = workspace_root + module_name+'/admin-controller'+java_src+'/com/'+package_name+'/'+module_name+'/admin/'
+	contoller = workspace_root + module_name+'/controller'+java_src+'/com/'+package_name+'/'+module_name+'/'
 
 	service_resource = workspace_root + module_name+'/service'+resource_src
 	# if not os.path.exists(api):
@@ -86,7 +86,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 			enum_class_name = class_name+field.name[0].upper() + field.name[1:]
 			mapperTemplate = Template(filename='./enum.tl')
 			buf = StringIO()
-			ctx = Context(buf, class_name=enum_class_name, class_comment=class_comment, enums=enums,module_name=module_name)
+			ctx = Context(buf, class_name=enum_class_name, class_comment=class_comment, enums=enums,module_name=module_name, package_name=package_name)
 			mapperTemplate.render_context(ctx)
 			# print(buf.getvalue())
 			dto_dir = api+'enums/'
@@ -98,7 +98,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 
 	mapperTemplate = Template(filename='./entity.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name,table_name=table_name)
+	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name,table_name=table_name, package_name=package_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
 	entity_dir = service+'entity/'
@@ -110,7 +110,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 
 	mapperTemplate = Template(filename='./mapper.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, entity_name=class_name+"DO", module_name=module_name)
+	ctx = Context(buf, class_name=class_name, entity_name=class_name+"DO", module_name=module_name, package_name=package_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
 	mapper_dir = service+'repository/mapper/'
@@ -123,10 +123,10 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 
 	mapperTemplate = Template(filename='./mapperXml.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, module_name=module_name,fields=fields, table_name=table_name)
+	ctx = Context(buf, class_name=class_name, module_name=module_name,fields=fields, table_name=table_name, package_name=package_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
-	mapper_dir = service_resource+'/com/sifangting/'+module_name+'/service/repository/mapper/'
+	mapper_dir = service_resource+'/com/'+package_name+'/'+module_name+'/service/repository/mapper/'
 	if not os.path.exists(mapper_dir):
 		os.makedirs(mapper_dir)
 	f = open(mapper_dir +class_name+'Mapper.xml', 'w')
@@ -136,7 +136,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 
 	mapperTemplate = Template(filename='./dto.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name)
+	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name, package_name=package_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
 	dto_dir = api+'dto/'
@@ -149,7 +149,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 	if hasId :
 		mapperTemplate = Template(filename='./commandService.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name)
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service + 'command/'
@@ -161,7 +161,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 
 		mapperTemplate = Template(filename='./commandServiceImpl.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name)
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service+'command/impl/'
@@ -171,9 +171,33 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 		f.write(buf.getvalue())
 		f.close()
 
+		mapperTemplate = Template(filename='./repository.tl')
+		buf = StringIO()
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
+		mapperTemplate.render_context(ctx)
+		# print(buf.getvalue())
+		service_dir = service + 'repository/'
+		if not os.path.exists(service_dir):
+			os.makedirs(service_dir)
+		f = open(service_dir + class_name+'Repository.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
+
+		mapperTemplate = Template(filename='./repositoryImpl.tl')
+		buf = StringIO()
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
+		mapperTemplate.render_context(ctx)
+		# print(buf.getvalue())
+		service_dir = service+'repository/impl/'
+		if not os.path.exists(service_dir):
+			os.makedirs(service_dir)
+		f = open(service_dir + class_name+'RepositoryImpl.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
+
 		mapperTemplate = Template(filename='./queryService.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name)
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service + 'query/'
@@ -185,7 +209,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 
 		mapperTemplate = Template(filename='./queryServiceImpl.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name)
+		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service+'query/impl/'
@@ -198,7 +222,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 
 		mapperTemplate = Template(filename='./adminController.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, rest_url=class_name.lower(), module_name=module_name, class_comment=class_comment,)
+		ctx = Context(buf, class_name=class_name, rest_url=class_name.lower(), module_name=module_name, class_comment=class_comment, package_name=package_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = admin_contoller+'controller/'

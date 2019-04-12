@@ -1,10 +1,10 @@
-package com.sifangting.${module_name}.service.query;
+package com.${package_name}.${module_name}.service.query;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.sifangting.${module_name}.api.dto.${entity_name};
-import com.sifangting.common.web.PagerParams;
+import com.${package_name}.${module_name}.api.dto.${entity_name};
+import com.${package_name}.common.web.PagerParams;
 
 public interface ${class_name}QueryService {
 

@@ -1,4 +1,4 @@
-package com.sifangting.${module_name}.api.enums;
+package com.${package_name}.${module_name}.api.enums;
 
 import lombok.Getter;
 

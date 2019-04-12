@@ -1,4 +1,4 @@
-package com.sifangting.${module_name}.admin.controller;
+package com.${package_name}.${module_name}.admin.controller;
 
 import com.guns21.data.domain.result.MessageResult;
 
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import lombok.extern.slf4j.Slf4j;
 
-import com.sifangting.${module_name}.service.query.${class_name}QueryService;
-import com.sifangting.${module_name}.service.command.${class_name}CommandService;
-import com.sifangting.${module_name}.api.dto.${class_name}DTO;
-import com.sifangting.common.web.PagerParams;
+import com.${package_name}.${module_name}.service.query.${class_name}QueryService;
+import com.${package_name}.${module_name}.service.command.${class_name}CommandService;
+import com.${package_name}.${module_name}.api.dto.${class_name}DTO;
+import com.${package_name}.common.web.PagerParams;
 
 /**
  * ${class_comment}

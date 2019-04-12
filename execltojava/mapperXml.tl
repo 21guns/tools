@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.sifangting.${module_name}.service.repository.mapper.${class_name}Mapper" >
+<mapper namespace="com.${package_name}.${module_name}.service.repository.mapper.${class_name}Mapper" >
 	<%
 		COLUMNS_LINE_MAX = 80
 		colums = []
@@ -56,24 +56,24 @@
 		${'\t\t'.join(colums_as) }
   	</sql>
 
-    <select id="pageList" resultType="com.sifangting.${module_name}.service.entity.${class_name}DO">
+    <select id="pageList" resultType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
     	SELECT <include refid="columns_as" /> FROM ${table_name}
     </select>
 
-    <select id="selectById" resultType="com.sifangting.${module_name}.service.entity.${class_name}DO" parameterType="java.lang.String">
+    <select id="selectById" resultType="com.${package_name}.${module_name}.service.entity.${class_name}DO" parameterType="java.lang.String">
         SELECT
         <include refid="columns_as" />
         FROM ${table_name}
         WHERE id = #{id}
     </select>
 
-    <insert id="insert" parameterType="com.sifangting.${module_name}.service.entity.${class_name}DO">
+    <insert id="insert" parameterType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
         INSERT INTO ${table_name} (<include refid="columns" />)
         VALUES
         (${'\t\t'.join(values)})
     </insert>
 
-    <update id="update" parameterType="com.sifangting.${module_name}.service.entity.${class_name}DO">
+    <update id="update" parameterType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
         UPDATE ${table_name}
         <set>
         	% for index in  range(len(fields)):

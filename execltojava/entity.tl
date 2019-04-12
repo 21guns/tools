@@ -1,4 +1,4 @@
-package com.sifangting.${module_name}.service.entity;
+package com.${package_name}.${module_name}.service.entity;
 
 % if hasId:
 import com.guns21.support.entity.AbstractEntity;

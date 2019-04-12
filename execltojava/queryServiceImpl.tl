@@ -1,4 +1,4 @@
-package com.sifangting.${module_name}.service.query.impl;
+package com.${package_name}.${module_name}.service.query.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.guns21.common.util.CollectionUtils;
 import com.guns21.data.assembler.AssemblerFactory;
-import com.sifangting.${module_name}.api.dto.${entity_name};
-import com.sifangting.${module_name}.service.entity.${class_name}DO;
-import com.sifangting.common.web.PagerParams;
-import com.sifangting.${module_name}.service.query.${class_name}QueryService;
-import com.sifangting.${module_name}.service.repository.mapper.${class_name}Mapper;
+import com.${package_name}.${module_name}.api.dto.${entity_name};
+import com.${package_name}.${module_name}.service.entity.${class_name}DO;
+import com.${package_name}.common.web.PagerParams;
+import com.${package_name}.${module_name}.service.query.${class_name}QueryService;
+import com.${package_name}.${module_name}.service.repository.mapper.${class_name}Mapper;
 
 @Service
 @Slf4j
