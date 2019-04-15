@@ -78,7 +78,7 @@
         <set>
         	% for index in  range(len(fields)):
             <if test="${fields[index].name} != null">
-                ${fields[index].field }= #{${fields[index].field}, jdbcType=${fields[index].jdbcType}},
+                ${fields[index].field }= #{${fields[index].name}, jdbcType=${fields[index].jdbcType}},
             </if>
 			% endfor
         </set>
