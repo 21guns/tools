@@ -1,5 +1,7 @@
 package com.${package_name}.${module_name}.admin.controller;
 
+import java.util.Objects;
+
 import com.guns21.data.domain.result.MessageResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,11 @@ public class ${class_name}AdminController {
 
 	@PostMapping("/save")
     public MessageResult save(@RequestBody ${class_name}DTO dto) {
-    	commandService.save(dto);
+    	if (Objects.isNull(dto.getId())) {
+			commandService.save(dto);
+		} else {
+			commandService.update(dto);
+		}
 		return MessageResult.success();   
 	} 
 }

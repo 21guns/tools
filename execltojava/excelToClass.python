@@ -43,33 +43,7 @@ def convert(one_string, space_character, firstUpower = False):    #one_string:�
 	hump_string = ''.join(others_capital)     #将list组合成为字符串，中间无连接符。
 	return hump_string
 
-def write_java_file(class_name,class_comment,fields,field_names,module_name,table_name):
-	# workspace_root='./code/'
-	workspace_root='/Volumes/data/Develop/workspace/sft/'
-	java_src = '/src/main/java'
-	resource_src = '/src/main/resources/'
-	package_name = 'sifangting'
-
-	hasId = False
-	if 'id' in field_names :	
-		hasId = True
-	api = workspace_root + module_name+'/api'+java_src+'/com/'+package_name+'/'+module_name+'/api/'
-	service = workspace_root + module_name+'/service'+java_src+'/com/'+package_name+'/'+module_name+'/service/'
-	admin_contoller = workspace_root + module_name+'/admin-controller'+java_src+'/com/'+package_name+'/'+module_name+'/admin/'
-	contoller = workspace_root + module_name+'/controller'+java_src+'/com/'+package_name+'/'+module_name+'/'
-
-	service_resource = workspace_root + module_name+'/service'+resource_src
-	# if not os.path.exists(api):
-	# 	os.makedirs(api+'dto/')
-	# if not os.path.exists(service):
-	# 	os.makedirs(service+'entity/')
-	# 	os.makedirs(service+'service/impl')
-	# 	os.makedirs(service+'repository/mapper/')
-	# if not os.path.exists(admin_contoller):
-	# 	os.makedirs(admin_contoller)
-	# if not os.path.exists(contoller):
-	# 	os.makedirs(contoller)
-
+def generate_enum_class(class_name,class_comment,fields,field_names,module_name,table_name,package_name,api):
 	for field in fields:
 		if field.name in ['type','status']:
 			enums = []
@@ -96,56 +70,7 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 			f.write(buf.getvalue())
 			f.close()
 
-	mapperTemplate = Template(filename='./entity.tl')
-	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name,table_name=table_name, package_name=package_name)
-	mapperTemplate.render_context(ctx)
-	# print(buf.getvalue())
-	entity_dir = service+'entity/'
-	if not os.path.exists(entity_dir):
-		os.makedirs(entity_dir)
-	f = open(entity_dir + class_name+'DO.java', 'w')
-	f.write(buf.getvalue())
-	f.close()
-
-	mapperTemplate = Template(filename='./mapper.tl')
-	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, entity_name=class_name+"DO", module_name=module_name, package_name=package_name)
-	mapperTemplate.render_context(ctx)
-	# print(buf.getvalue())
-	mapper_dir = service+'repository/mapper/'
-	if not os.path.exists(mapper_dir):
-		os.makedirs(mapper_dir)
-	f = open(mapper_dir +class_name+'Mapper.java', 'w')
-	f.write(buf.getvalue())
-	f.close()
-
-
-	mapperTemplate = Template(filename='./mapperXml.tl')
-	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, module_name=module_name,fields=fields, table_name=table_name, package_name=package_name)
-	mapperTemplate.render_context(ctx)
-	# print(buf.getvalue())
-	mapper_dir = service_resource+'/com/'+package_name+'/'+module_name+'/service/repository/mapper/'
-	if not os.path.exists(mapper_dir):
-		os.makedirs(mapper_dir)
-	f = open(mapper_dir +class_name+'Mapper.xml', 'w')
-	f.write(buf.getvalue())
-	f.close()
-
-
-	mapperTemplate = Template(filename='./dto.tl')
-	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name, package_name=package_name)
-	mapperTemplate.render_context(ctx)
-	# print(buf.getvalue())
-	dto_dir = api+'dto/'
-	if not os.path.exists(dto_dir):
-		os.makedirs(dto_dir)
-	f = open(dto_dir + class_name+'DTO.java', 'w')
-	f.write(buf.getvalue())
-	f.close()
-
+def generate_service_controller_repository(class_name,class_comment,fields,field_names,module_name,table_name,package_name,hasId,service,admin_contoller):
 	if hasId :
 		mapperTemplate = Template(filename='./commandService.tl')
 		buf = StringIO()
@@ -231,6 +156,104 @@ def write_java_file(class_name,class_comment,fields,field_names,module_name,tabl
 		f = open(service_dir + class_name+'AdminController.java', 'w')
 		f.write(buf.getvalue())
 		f.close()
+
+def generate_do_dto(class_name,class_comment,fields,field_names,module_name,table_name,package_name,service,api):
+	mapperTemplate = Template(filename='./entity.tl')
+	buf = StringIO()
+	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name,table_name=table_name, package_name=package_name)
+	mapperTemplate.render_context(ctx)
+	# print(buf.getvalue())
+	entity_dir = service+'entity/'
+	if not os.path.exists(entity_dir):
+		os.makedirs(entity_dir)
+	f = open(entity_dir + class_name+'DO.java', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
+	mapperTemplate = Template(filename='./dto.tl')
+	buf = StringIO()
+	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, hasId=False,module_name=module_name, package_name=package_name)
+	mapperTemplate.render_context(ctx)
+	# print(buf.getvalue())
+	dto_dir = api+'dto/'
+	if not os.path.exists(dto_dir):
+		os.makedirs(dto_dir)
+	f = open(dto_dir + class_name+'DTO.java', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
+def generate_mapper_class(class_name,class_comment,fields,field_names,module_name,table_name,package_name,service):
+	mapperTemplate = Template(filename='./mapper.tl')
+	buf = StringIO()
+	ctx = Context(buf, class_name=class_name, entity_name=class_name+"DO", module_name=module_name, package_name=package_name)
+	mapperTemplate.render_context(ctx)
+	# print(buf.getvalue())
+	mapper_dir = service+'repository/mapper/'
+	if not os.path.exists(mapper_dir):
+		os.makedirs(mapper_dir)
+	f = open(mapper_dir +class_name+'Mapper.java', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
+def generate_mapper_xml(class_name,class_comment,fields,field_names,module_name,table_name,package_name,service_resource):
+	mapperTemplate = Template(filename='./mapperXml.tl')
+	buf = StringIO()
+	ctx = Context(buf, class_name=class_name, module_name=module_name,fields=fields, table_name=table_name, package_name=package_name)
+	mapperTemplate.render_context(ctx)
+	# print(buf.getvalue())
+	mapper_dir = service_resource+'/com/'+package_name+'/'+module_name+'/service/repository/mapper/'
+	if not os.path.exists(mapper_dir):
+		os.makedirs(mapper_dir)
+	f = open(mapper_dir +class_name+'Mapper.xml', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
+def write_java_file(class_name,class_comment,fields,field_names,module_name,table_name):
+	# workspace_root='./code/'
+	workspace_root='/Volumes/data/Develop/workspace/sft/'
+	java_src = '/src/main/java'
+	resource_src = '/src/main/resources/'
+	package_name = 'sifangting'
+
+	hasId = False
+	if 'id' in field_names :	
+		hasId = True
+	api = workspace_root + module_name+'/api'+java_src+'/com/'+package_name+'/'+module_name+'/api/'
+	service = workspace_root + module_name+'/service'+java_src+'/com/'+package_name+'/'+module_name+'/service/'
+	admin_contoller = workspace_root + module_name+'/admin-controller'+java_src+'/com/'+package_name+'/'+module_name+'/admin/'
+	contoller = workspace_root + module_name+'/controller'+java_src+'/com/'+package_name+'/'+module_name+'/'
+
+	service_resource = workspace_root + module_name+'/service'+resource_src
+	# if not os.path.exists(api):
+	# 	os.makedirs(api+'dto/')
+	# if not os.path.exists(service):
+	# 	os.makedirs(service+'entity/')
+	# 	os.makedirs(service+'service/impl')
+	# 	os.makedirs(service+'repository/mapper/')
+	# if not os.path.exists(admin_contoller):
+	# 	os.makedirs(admin_contoller)
+	# if not os.path.exists(contoller):
+	# 	os.makedirs(contoller)
+	generate_enum_class_flag = False
+	generate_do_dto_flag = False
+	generate_service_controller_repository_flag = False
+	generate_mapper_class_flag = False
+	generate_mapper_xml_flag = True
+
+	if generate_enum_class_flag :
+		generate_enum_class(class_name,class_comment,fields,field_names,module_name,table_name,package_name,api)
+
+	if generate_do_dto_flag :
+		generate_do_dto(class_name,class_comment,fields,field_names,module_name,table_name,package_name,service,api)
+
+	if generate_mapper_class_flag :
+		generate_mapper_class(class_name,class_comment,fields,field_names,module_name,table_name,package_name,service)
+
+	if generate_mapper_xml_flag :
+		generate_mapper_xml(class_name,class_comment,fields,field_names,module_name,table_name,package_name,service_resource)
+
+	if generate_service_controller_repository_flag :
+		generate_service_controller_repository(class_name,class_comment,fields,field_names,module_name,table_name,package_name,hasId,service,admin_contoller)
 
 
 #打开一个workbook

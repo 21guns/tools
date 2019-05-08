@@ -6,4 +6,6 @@ public interface ${class_name}CommandService {
 
 	void save(${entity_name} dto);
 
+    void update(${entity_name} dto);
+
 }

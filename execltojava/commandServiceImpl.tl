@@ -10,7 +10,7 @@ import com.${package_name}.${module_name}.service.entity.${class_name}DO;
 import com.${package_name}.${module_name}.service.command.${class_name}CommandService;
 import com.${package_name}.${module_name}.service.repository.${class_name}Repository;
 
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -21,11 +21,17 @@ public class ${class_name}CommandServiceImpl implements ${class_name}CommandServ
 
 	@Override
 	public 	void save(${entity_name} dto) {
-	    ${class_name}DO doo = AssemblerFactory.to(dto, ${class_name}DO.class);
-		if (Objects.isNull(dto.getId())) {
+	    Optional<${class_name}DO> doOptional = AssemblerFactory.toOptional(dto, ${class_name}DO.class);
+		doOptional.ifPresent(doo -> {
 			repository.save(doo);
-		} else {
+		});
+	}
+
+	@Override
+	public 	void update(${entity_name} dto) {
+	    Optional<${class_name}DO> doOptional = AssemblerFactory.toOptional(dto, ${class_name}DO.class);
+		doOptional.ifPresent(doo -> {
 			repository.update(doo);
-		}	
+		});
 	}
 }
