@@ -32,8 +32,7 @@ public class ${class_name}QueryServiceImpl implements ${class_name}QueryService 
 
     @Override
     public Optional<${entity_name}> get${class_name}ById(String id) {
-        ${class_name}DO doo = mapper.selectById(id);
-        return AssemblerFactory.toOptional(doo, ${class_name}DTO.class);
+        return AssemblerFactory.toOptional(mapper.selectById(id), ${class_name}DTO.class);
     }
 
 
