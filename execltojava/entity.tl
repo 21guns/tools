@@ -1,7 +1,19 @@
 package com.${package_name}.${module_name}.service.entity;
 
+<%
+	hasId = True
+	if id_Field is None :
+		hasId = False
+%>
+
 % if hasId:
-import com.guns21.support.entity.AbstractEntity;
+	% if id_Field.type == "String" :
+import com.guns21.support.entity.StringIDEntity;
+	% elif id_Field.type == "Long":
+import com.guns21.support.entity.LongIDEntity;
+	% else :
+import com.guns21.support.entity.StringIDEntity;
+	% endif
 % endif 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,18 +48,28 @@ import java.util.Objects;
 @Setter
 @Getter
 % if hasId:
-public class ${class_name}DO extends AbstractEntity {
+	% if id_Field.type == "String" :
+public class ${class_name}DO extends StringIDEntity {
+	% elif id_Field.type == "Long":
+public class ${class_name}DO extends LongIDEntity {
+	% else :
+public class ${class_name}DO extends StringIDEntity {
+	% endif
 % else:
 public class ${class_name}DO implements Serializable {
 % endif 
 
 	% for a in fields:
+	% if hasId:
+		% if a.name not in ["id","gmt_created","gmt_modified"]:
+
 	/**
  	 * ${a.comment}
  	 * ${a.note}
 	 */
 	private ${a.type} ${a.name};
-
+		% endif
+	%endif
 	% endfor
 
 

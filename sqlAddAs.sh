@@ -1,14 +1,34 @@
 #!/bin/bash
-str='id, shop_id, commodity_id, shelf_time, down_time, timing, status, gmt_created, gmt_modified,note'
+# 使用方式：sh sqlAddAs.sh c '' 'id, type, no, name, picture, price, original_price, discount_rate, activity_price,document_id, shop_id, status, gmt_created, gmt_modified, note'
+if [ $# == 3 ]
+then
+    str=$3
+    table_alise=$1
+    column_allise=$2
+    #echo $str |awk -F, '{print $1}'
 
-#echo $str |awk -F, '{print $1}'
+    mails=$(echo $str | tr "," "\n")
+    RE=""
+    temp=""
 
-mails=$(echo $str | tr "," "\n")
-RE=""
-for addr in $mails
-do
-    # echo "$addr AS s$addr"
-    RE="$RE, $addr AS s$addr"
-
-done 
-echo $RE
+    for addr in $mails
+    do
+        # echo "$addr AS s$addr"
+        temp="$temp $table_alise.$addr AS $column_allise_$addr, "
+        # echo ${#temp}
+        if [ ${#temp} -gt 80	]
+        then
+            # echo $temp
+            RE="$RE\n$temp"
+            temp=""
+        fi
+    done 
+    if [ ${#temp} -gt 0    ]
+    then
+      RE="$RE\n$temp"
+    fi
+    #复制到剪切板，http://cuiqingwei.github.io/2015/01/15/2015-01-15-xclip-pbcopy-xsel%E7%94%A8%E6%B3%95-terminal-%E5%A4%8D%E5%88%B6%E7%B2%98%E5%B8%96-mac-ubuntu/
+    echo $RE | pbcopy
+else
+	echo "table_alise, column_allise, column"
+fi

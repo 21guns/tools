@@ -38,19 +38,22 @@ public class ${class_name}AdminController {
 		return MessageResult.success(queryService.get${class_name}ById(id).orElse(null));   
 	} 
 
-	@GetMapping("/page")
+	@GetMapping
     public MessageResult page(${class_name}DTO dto, PagerParams pagerParams) {
 
 		return MessageResult.successPage(queryService.page(dto, pagerParams));   
 	} 
 
-	@PostMapping("/save")
+	@PostMapping
     public MessageResult save(@RequestBody ${class_name}DTO dto) {
-    	if (Objects.isNull(dto.getId())) {
-			commandService.save(dto);
-		} else {
-			commandService.update(dto);
-		}
+    	commandService.save(dto);
 		return MessageResult.success();   
 	} 
+
+	@PostMapping("/{id}")
+    public MessageResult update(@PathVariable String id, @RequestBody ${class_name}DTO dto) {
+  		commandService.update(dto);
+		return MessageResult.success();   
+	} 
+
 }

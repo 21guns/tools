@@ -15,11 +15,13 @@ public class ${class_name}RepositoryImpl implements ${class_name}Repository {
 
 	@Override
     public Integer save(${class_name}DO data) {
-    	return mapper.insert(data);
+        data.preCreate();
+        return mapper.insert(data);
     }
 
 	@Override
     public Integer update(${class_name}DO data) {
+        data.preUpdate();
     	return mapper.update(data);
     }
 
