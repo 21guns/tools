@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
+import com.guns21.data.domain.result.PageData;
+import com.guns21.common.util.ObjectUtils;
 import com.guns21.common.util.CollectionUtils;
 import com.guns21.data.assembler.AssemblerFactory;
 import com.${package_name}.${module_name}.api.dto.${entity_name};
 import com.${package_name}.${module_name}.service.entity.${class_name}DO;
-import com.${package_name}.common.web.PagerParams;
 import com.${package_name}.${module_name}.service.query.${class_name}QueryService;
 import com.${package_name}.${module_name}.service.repository.mapper.${class_name}Mapper;
 
@@ -23,15 +24,16 @@ public class ${class_name}QueryServiceImpl implements ${class_name}QueryService 
 	private ${class_name}Mapper mapper;
 
     @Override
-    public List<${entity_name}> page(${entity_name} dto, PagerParams pagerParams) {
+    public List<${entity_name}> page(${entity_name} dto, PageData pagerParams) {
         ${class_name}DO doo = AssemblerFactory.to(dto, ${class_name}DO.class);
-    	List dos = mapper.pageList(doo, pagerParams.getPage(), pagerParams.getPageSize());
+    	List dos = mapper.pageList(doo, pagerParams.getPage(), pagerParams.getSize());
     	CollectionUtils.replaceAll(dos, ddo->AssemblerFactory.to(ddo, ${entity_name}.class));
     	return dos;
     }
 
     @Override
     public Optional<${entity_name}> get${class_name}ById(String id) {
+        if (!ObjectUtils.hasText(id)) return Optional.empty();
         return AssemblerFactory.toOptional(mapper.selectById(id), ${class_name}DTO.class);
     }
 

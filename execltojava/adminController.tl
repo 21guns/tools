@@ -3,6 +3,7 @@ package com.${package_name}.${module_name}.admin.controller;
 import java.util.Objects;
 
 import com.guns21.data.domain.result.MessageResult;
+import com.guns21.data.domain.result.PageData;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,21 +40,19 @@ public class ${class_name}AdminController {
 	} 
 
 	@GetMapping
-    public MessageResult page(${class_name}DTO dto, PagerParams pagerParams) {
+    public MessageResult page(${class_name}DTO dto, PageData pagerParams) {
 
 		return MessageResult.successPage(queryService.page(dto, pagerParams));   
 	} 
 
 	@PostMapping
     public MessageResult save(@RequestBody ${class_name}DTO dto) {
-    	commandService.save(dto);
-		return MessageResult.success();   
+    	return commandService.save(dto);
 	} 
 
 	@PostMapping("/{id}")
     public MessageResult update(@PathVariable String id, @RequestBody ${class_name}DTO dto) {
-  		commandService.update(dto);
-		return MessageResult.success();   
+  		return commandService.update(dto);
 	} 
 
 }
