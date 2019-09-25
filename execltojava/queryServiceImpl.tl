@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import com.guns21.data.domain.result.PageData;
+import com.guns21.mybatis.PageUtils;
 import com.guns21.common.util.ObjectUtils;
 import com.guns21.common.util.CollectionUtils;
 import com.guns21.data.assembler.AssemblerFactory;
@@ -16,6 +17,10 @@ import com.${package_name}.${module_name}.service.entity.${class_name}DO;
 import com.${package_name}.${module_name}.service.query.${class_name}QueryService;
 import com.${package_name}.${module_name}.service.repository.mapper.${class_name}Mapper;
 
+/**
+ * @author jliu
+ * @date
+ */
 @Service
 @Slf4j
 public class ${class_name}QueryServiceImpl implements ${class_name}QueryService {
@@ -26,9 +31,9 @@ public class ${class_name}QueryServiceImpl implements ${class_name}QueryService 
     @Override
     public List<${entity_name}> page(${entity_name} dto, PageData pagerParams) {
         ${class_name}DO doo = AssemblerFactory.to(dto, ${class_name}DO.class);
-    	List dos = mapper.pageList(doo, pagerParams.getPage(), pagerParams.getSize());
-    	CollectionUtils.replaceAll(dos, ddo->AssemblerFactory.to(ddo, ${entity_name}.class));
-    	return dos;
+    	List<${class_name}DO> dos = mapper.pageList(doo, pagerParams.getPage(), pagerParams.getSize());
+        return dos.stream().map(ddo -> AssemblerFactory.to(ddo, ${entity_name}.class))
+                .collect(PageUtils.toPages(dos));
     }
 
     @Override

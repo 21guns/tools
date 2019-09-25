@@ -22,19 +22,25 @@ public class ${class_name}CommandServiceImpl implements ${class_name}CommandServ
 
 	@Override
 	public 	MessageResult save(${entity_name} dto) {
-	    Optional<${class_name}DO> doOptional = AssemblerFactory.toOptional(dto, ${class_name}DO.class);
-		doOptional.ifPresent(doo -> {
+	    return AssemblerFactory.toOptional(dto, ${class_name}DO.class)
+	    .map(doo -> {
 			repository.save(doo);
-		});
-		return MessageResult.success();
+			return MessageResult.success();
+		}).orElse(MessageResult.fail());
 	}
 
 	@Override
 	public 	MessageResult update(${entity_name} dto) {
-	    Optional<${class_name}DO> doOptional = AssemblerFactory.toOptional(dto, ${class_name}DO.class);
-		doOptional.ifPresent(doo -> {
+	    return AssemblerFactory.toOptional(dto, ${class_name}DO.class)
+			.map(doo -> {
 			repository.update(doo);
-		});
+			return MessageResult.success();
+		}).orElse(MessageResult.fail());
+	}
+
+	@Override
+	public MessageResult deleteById(String id) {
+		repository.deleteById(id);
 		return MessageResult.success();
 	}
 }

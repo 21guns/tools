@@ -10,4 +10,6 @@ public interface ${class_name}CommandService {
 
     MessageResult update(${entity_name} dto);
 
+    MessageResult deleteById(String id);
+
 }
