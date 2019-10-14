@@ -69,6 +69,13 @@ public class ${class_name}DO implements Serializable {
 	 */
 	private ${a.type} ${a.name};
 		% endif
+	% else :
+
+	/**
+ 	 * ${a.comment}
+ 	 * ${a.note}
+	 */
+	private ${a.type} ${a.name};
 	%endif
 	% endfor
 
