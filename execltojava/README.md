@@ -5,13 +5,18 @@
 生产基于Spring boot Mybatis的微服务架构的代码
 
 ## 相关架构 
-Query(extends DTO) ----------------->
+Query(extends DTO) ----------------->  
+
 Controller --> QueryService --> Mapper
+
 <--------------------------------- DTO
 
 DTO --------- DTO ---------> DO ---------------------->
+
 Controller --> CommandService --> Repository --> Mapper
+
 <------------ DTO <--------- DO --------------------- DO 
+
 
 
 Repository = 数据仓库 ：包含事务处理
