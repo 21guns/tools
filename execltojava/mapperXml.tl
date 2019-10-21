@@ -54,6 +54,9 @@
  			% endif 
 		% endfor
   	</resultMap>
+  	<resultMap id="${class_name}DTOResultMap" type="com.${package_name}.${module_name}.api.dto.${class_name}DTO" extends="${class_name}ResultMap">
+  	</resultMap>
+
 	<sql id="columns">
 		${',\n\t\t'.join(colums) }
   	</sql>
@@ -62,11 +65,11 @@
 		${',\n\t\t'.join(colums_as) }
   	</sql>
 
-    <select id="pageList" resultType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
+    <select id="pageList" resultType="com.${package_name}.${module_name}.api.dto.${class_name}DTO">
     	SELECT <include refid="columns_as" /> FROM ${table_name}
     </select>
 
-    <select id="selectById" resultType="com.${package_name}.${module_name}.service.entity.${class_name}DO" parameterType="java.lang.String">
+    <select id="selectById" resultType="com.${package_name}.${module_name}.api.dto.${class_name}DTO" parameterType="java.lang.String">
         SELECT
         <include refid="columns_as" />
         FROM ${table_name}

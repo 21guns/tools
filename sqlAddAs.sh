@@ -14,7 +14,7 @@ then
     for addr in $mails
     do
         # echo "$addr AS s$addr"
-        temp="$temp $table_alise.$addr AS $column_allise_$addr, "
+        temp="$temp$table_alise.$addr AS $column_allise$addr, "
         # echo ${#temp}
         if [ ${#temp} -gt 80	]
         then

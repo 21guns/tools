@@ -5,11 +5,12 @@ import java.util.Optional;
 
 import com.guns21.data.domain.result.PageData;
 
-import com.${package_name}.${module_name}.api.dto.${entity_name};
+import com.${package_name}.${module_name}.api.dto.${class_name}DTO;
+import com.${package_name}.${module_name}.api.query.${class_name}Query;
 
 public interface ${class_name}QueryService {
 
-    List<${entity_name}> page(${entity_name} dto, PageData pagerParams);
+    List<${class_name}DTO> page(${class_name}Query query, PageData pagerParams);
 
-    Optional<${entity_name}> get${class_name}ById(String id);
+    Optional<${class_name}DTO> getById(String id);
 }

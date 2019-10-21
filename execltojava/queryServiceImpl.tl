@@ -12,7 +12,8 @@ import com.guns21.mybatis.PageUtils;
 import com.guns21.common.util.ObjectUtils;
 import com.guns21.common.util.CollectionUtils;
 import com.guns21.data.assembler.AssemblerFactory;
-import com.${package_name}.${module_name}.api.dto.${entity_name};
+import com.${package_name}.${module_name}.api.dto.${class_name}DTO;
+import com.${package_name}.${module_name}.api.query.${class_name}Query;
 import com.${package_name}.${module_name}.service.entity.${class_name}DO;
 import com.${package_name}.${module_name}.service.query.${class_name}QueryService;
 import com.${package_name}.${module_name}.service.repository.mapper.${class_name}Mapper;
@@ -29,17 +30,16 @@ public class ${class_name}QueryServiceImpl implements ${class_name}QueryService 
 	private ${class_name}Mapper mapper;
 
     @Override
-    public List<${entity_name}> page(${entity_name} dto, PageData pagerParams) {
-        ${class_name}DO doo = AssemblerFactory.to(dto, ${class_name}DO.class);
-    	List<${class_name}DO> dos = mapper.pageList(doo, pagerParams.getPage(), pagerParams.getSize());
-        return dos.stream().map(ddo -> AssemblerFactory.to(ddo, ${entity_name}.class))
-                .collect(PageUtils.toPages(dos));
+    public List<${class_name}DTO> page(${class_name}Query query, PageData pagerParams) {
+    	return mapper.pageList(query, pagerParams.getPage(), pagerParams.getSize());
     }
 
     @Override
-    public Optional<${entity_name}> get${class_name}ById(String id) {
-        if (!ObjectUtils.hasText(id)) return Optional.empty();
-        return AssemblerFactory.toOptional(mapper.selectById(id), ${class_name}DTO.class);
+    public Optional<${class_name}DTO> getById(String id) {
+        if (ObjectUtils.hasText(id)) {
+            return mapper.selectById(id);
+        }
+        return Optional.empty();
     }
 
 

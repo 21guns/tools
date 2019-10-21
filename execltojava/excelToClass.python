@@ -183,6 +183,18 @@ def generate_do_dto(class_name,class_comment,fields,id_Field,module_name,table_n
 	f.write(buf.getvalue())
 	f.close()
 
+	mapperTemplate = Template(filename='./query.tl')
+	buf = StringIO()
+	ctx = Context(buf, class_name=class_name, class_comment=class_comment,fields=fields, module_name=module_name, package_name=package_name)
+	mapperTemplate.render_context(ctx)
+	# print(buf.getvalue())
+	dto_dir = api+'query/'
+	if not os.path.exists(dto_dir):
+		os.makedirs(dto_dir)
+	f = open(dto_dir + class_name+'Query.java', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
 def generate_mapper_class(class_name,class_comment,fields,module_name,table_name,package_name,service):
 	mapperTemplate = Template(filename='./mapper.tl')
 	buf = StringIO()
