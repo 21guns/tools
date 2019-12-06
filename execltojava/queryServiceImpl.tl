@@ -8,12 +8,9 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import com.guns21.data.domain.result.PageData;
-import com.guns21.mybatis.PageUtils;
 import com.guns21.common.util.ObjectUtils;
-import com.guns21.common.util.CollectionUtils;
-import com.guns21.data.assembler.AssemblerFactory;
 import com.${package_name}.${module_name}.api.dto.${class_name}DTO;
-import com.${package_name}.${module_name}.api.query.${class_name}Query;
+import com.${package_name}.${module_name}.api.dto.query.${class_name}Query;
 import com.${package_name}.${module_name}.service.entity.${class_name}DO;
 import com.${package_name}.${module_name}.service.query.${class_name}QueryService;
 import com.${package_name}.${module_name}.service.repository.mapper.${class_name}Mapper;

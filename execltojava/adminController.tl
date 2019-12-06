@@ -36,7 +36,7 @@ public class ${class_name}AdminController {
 	@GetMapping("/{id}")
     public MessageResult<${class_name}DTO> get(@PathVariable String id) {
 
-		return MessageResult.success(queryService.get${class_name}ById(id).orElse(null));   
+		return MessageResult.success(queryService.getById(id).orElse(null));   
 	} 
 
 	@GetMapping

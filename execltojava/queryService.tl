@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.guns21.data.domain.result.PageData;
 
 import com.${package_name}.${module_name}.api.dto.${class_name}DTO;
-import com.${package_name}.${module_name}.api.query.${class_name}Query;
+import com.${package_name}.${module_name}.api.dto.query.${class_name}Query;
 
 public interface ${class_name}QueryService {
 

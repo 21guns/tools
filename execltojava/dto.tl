@@ -1,7 +1,7 @@
 package com.${package_name}.${module_name}.api.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import java.util.Objects;
 /**
  * ${class_comment}
  */
-@Builder(toBuilder = true)
+@SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
