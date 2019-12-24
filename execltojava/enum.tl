@@ -13,7 +13,7 @@ public enum ${class_name}Enum {
  	% else:
  		<% spl=';' %>
  	% endif 
- 	${class_name}Enum${enums[index].name}( new Byte("${enums[index].name}"),"${enums[index].comment}")${spl}
+ 	${class_name}Enum${enums[index].name}(Byte.parseByte("${enums[index].name}"),"${enums[index].comment}")${spl}
 	% endfor
 
 	private Byte value;
