@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import entity
+import java
+
+def read_field(str,space_character):
+	cloumn_index = 3
+	comment_index = 2
+	jdbcType_index = 4
+	note_index = 9
+	s = str.lstrip().split(space_character);
+	ss = []
+	for x in s:
+		x = x.lstrip().rstrip()
+		ss.append(x.replace('`', ''))
+	# print(ss)
+	return entity.read_field(ss[cloumn_index],ss[jdbcType_index] ,ss[comment_index],
+		ss[note_index], ss[cloumn_index] == 'id')
+
+
+table_file = open('/Volumes/data/Develop/workspace/ktjr/loan-collection/doc/技术文档/系统设计/数据结构.md', 'r')
+tables = []
+current_table = None
+for l in table_file.readlines():
+	line = l.strip() # 把末尾的'\n'删掉
+	if line.startswith('#'):# 邮件模板配置表 email_notification
+		current_table = entity.read_table(line[1:], ' ')
+		current_table.set_module_name('test')
+		tables.append(current_table)
+	if line.startswith('|'):
+		f = read_field(line, '|')
+		if current_table != None:
+			current_table.add_fields(f);
+
+interfacr_filr = open('/Volumes/data/Develop/workspace/ktjr/loan-collection/doc/技术文档/接口文档/case-apis.md', 'r')
+# print(current_table)
+workspace_root='/Volumes/data/Develop/workspace/ktjr/loan-collection1/'
+# java.write_parent(workspace_root,'ktjr.lcl')
+# java.write_project(workspace_root,'ktjr.lcl',current_table)
+java.write_projects(workspace_root,'kk.lcl',tables)
+
+
