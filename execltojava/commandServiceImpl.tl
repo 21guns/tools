@@ -1,46 +1,40 @@
 package com.${package_name}.${module_name}.service.command.impl;
-
+<%!
+	import utils
+%>
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import com.guns21.data.domain.result.MessageResult;
 import com.guns21.data.assembler.AssemblerFactory;
-import com.${package_name}.${module_name}.api.dto.${class_name}DTO;
-import com.${package_name}.${module_name}.service.entity.${class_name}DO;
-import com.${package_name}.${module_name}.service.command.${class_name}CommandService;
-import com.${package_name}.${module_name}.service.repository.${class_name}Repository;
+% for a in actions:
+	% if a.has_request():
+import com.${package_name}.${module_name}.api.dto.${a.class_name}DTO;
+	% endif
+% endfor
 
 import java.util.Optional;
 
 @Service
 @Slf4j
-public class ${class_name}CommandServiceImpl implements ${class_name}CommandService {
+public class ${utils.firstUpower(module_name)}CommandServiceImpl implements ${utils.firstUpower(module_name)}CommandService {
 
- 	@Autowired
-	private ${class_name}Repository repository;
-
-	@Override
-	public 	MessageResult save(${class_name}DTO dto) {
-	    return AssemblerFactory.toOptional(dto, ${class_name}DO.class)
-	    .map(doo -> {
-			repository.save(doo);
-			return MessageResult.success();
-		}).orElse(MessageResult.fail());
-	}
-
-	@Override
-	public 	MessageResult update(${class_name}DTO dto) {
-	    return AssemblerFactory.toOptional(dto, ${class_name}DO.class)
-			.map(doo -> {
-			repository.update(doo);
-			return MessageResult.success();
-		}).orElse(MessageResult.fail());
-	}
-
-	@Override
-	public MessageResult deleteById(String id) {
-		repository.deleteById(id);
-		return MessageResult.success();
-	}
+	% for a in actions:
+	<%
+		params_type = a.class_name + 'DTO dto'
+		method_name = a.get_method_name()
+		if not a.has_request():
+			params_type = ''
+		if a.is_get_id_method():
+			params_type = 'String id'
+			method_name = 'get'
+	%>
+	/**
+ 	 * ${a.comment}
+	 */
+    public MessageResult ${method_name}(${params_type}) {
+    	return MessageResult.success();
+	} 
+	% endfor
 }

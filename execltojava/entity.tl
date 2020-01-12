@@ -2,6 +2,8 @@ package com.${package_name}.${module_name}.service.entity;
 
 <%
 	hasId = True
+	class_name =table.entity_name
+	id_Field =table.get_id_field()
 	if id_Field is None :
 		hasId = False
 %>
@@ -30,7 +32,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * ${class_comment}
+ * ${table.comment}
  */
 @Builder(toBuilder = true)
 @AllArgsConstructor
@@ -59,7 +61,7 @@ public class ${class_name}DO extends StringIDEntity {
 public class ${class_name}DO implements Serializable {
 % endif 
 
-	% for a in fields:
+	% for a in table.fields:
 	% if hasId:
 		% if a.name not in ["id","gmt_created","gmt_modified"]:
 

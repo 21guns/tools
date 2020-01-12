@@ -15,6 +15,8 @@
 		values = []
 		values_line = ""
 		values_start = 0
+		table_name = table.name
+		fields = table.fields
 
 		for index in  range(len(fields)):
 

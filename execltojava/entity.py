@@ -111,7 +111,9 @@ class Action(object):
 		# print( url.lstrip().rstrip().split(space_character))
 		self.http_method = http_method.lstrip().rstrip().split(space_character)[-1].replace('`', '')
 		lastUrl = self.url.split('/')[-1]
-		self.class_name = utils.firstUpower(self.http_method) + lastUrl
+		if lastUrl.startswith('{') :
+			lastUrl =self.url.split('/')[-2]
+		self.class_name = utils.firstUpower(self.http_method) + utils.firstUpower(lastUrl)
 
 	def set_module_name(self, module_name):
 		self.module_name = module_name
@@ -140,6 +142,10 @@ class Action(object):
 				# print(self.http_method,self.url,self.request_params)
 				return True
 	def get_method_name(self):
+		lastUrl = self.url.split('/')[-1]
+		if lastUrl.startswith('{') :
+			return self.http_method.lower() +utils.firstUpower(self.url.split('/')[-2])
+
 		return self.url.split('/')[-1]
 
 	def has_request(self):

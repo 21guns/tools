@@ -130,66 +130,59 @@ def generate_service_controller_repository(class_name,class_comment,fields,modul
 		f.write(buf.getvalue())
 		f.close()
 
-def generate_do_dto(class_name,class_comment,fields,id_Field,module_name,table_name,package_name,service,api):
+def generate_do(workspace_root, package_name, table):
+	package_dir =package_name.replace('.', '/')
+	module_name =table.module_name
+	service_root_dir = workspace_root + module_name+'/service'
+	service = service_root_dir+java_src+'/com/'+package_dir+'/'+module_name+'/service/'
+	
 	mapperTemplate = Template(filename='./entity.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, class_comment=class_comment, fields=fields, id_Field=id_Field,module_name=module_name,table_name=table_name, package_name=package_name)
+	ctx = Context(buf, table=table,module_name=module_name,package_name=package_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
 	entity_dir = service+'entity/'
 	if not os.path.exists(entity_dir):
 		os.makedirs(entity_dir)
-	f = open(entity_dir + class_name+'DO.java', 'w')
+	f = open(entity_dir + table.entity_name+'DO.java', 'w')
 	f.write(buf.getvalue())
 	f.close()
 
-	# mapperTemplate = Template(filename='./dto.tl')
-	# buf = StringIO()
-	# ctx = Context(buf, class_name=class_name, class_comment=class_comment,fields=fields, module_name=module_name, package_name=package_name)
-	# mapperTemplate.render_context(ctx)
-	# # print(buf.getvalue())
-	# dto_dir = api+'dto/'
-	# if not os.path.exists(dto_dir):
-	# 	os.makedirs(dto_dir)
-	# f = open(dto_dir + class_name+'DTO.java', 'w')
-	# f.write(buf.getvalue())
-	# f.close()
 
-	# mapperTemplate = Template(filename='./query.tl')
-	# buf = StringIO()
-	# ctx = Context(buf, class_name=class_name, class_comment=class_comment,fields=fields, module_name=module_name, package_name=package_name)
-	# mapperTemplate.render_context(ctx)
-	# # print(buf.getvalue())
-	# dto_dir = api+'dto/query/'
-	# if not os.path.exists(dto_dir):
-	# 	os.makedirs(dto_dir)
-	# f = open(dto_dir + class_name+'Query.java', 'w')
-	# f.write(buf.getvalue())
-	# f.close()
+def generate_mapper_class(workspace_root, package_name, table):
+	package_dir =package_name.replace('.', '/')
+	module_name =table.module_name
+	service_root_dir = workspace_root + module_name+'/service'
+	service = service_root_dir+java_src+'/com/'+package_dir+'/'+module_name+'/service/'
 
-def generate_mapper_class(class_name,class_comment,fields,module_name,table_name,package_name,service):
 	mapperTemplate = Template(filename='./mapper.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, entity_name=class_name+"DO", module_name=module_name, package_name=package_name)
+	ctx = Context(buf, table=table,module_name=module_name,package_name=package_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
 	mapper_dir = service+'repository/mapper/'
 	if not os.path.exists(mapper_dir):
 		os.makedirs(mapper_dir)
-	f = open(mapper_dir +class_name+'Mapper.java', 'w')
+	f = open(mapper_dir +table.entity_name+'Mapper.java', 'w')
 	f.write(buf.getvalue())
 	f.close()
 
-def generate_mapper_xml(class_name,class_comment,fields,module_name,table_name,package_name,service_resource):
+def generate_mapper_xml(workspace_root, package_name, table):
+	package_dir =package_name.replace('.', '/')
+	module_name =table.module_name
+	service_root_dir = workspace_root + module_name+'/service'
+	service = service_root_dir+java_src+'/com/'+package_dir+'/'+module_name+'/service/'
+	service_resource = workspace_root + module_name+'/service'+resource_src
+
 	mapperTemplate = Template(filename='./mapperXml.tl')
 	buf = StringIO()
-	ctx = Context(buf, class_name=class_name, module_name=module_name,fields=fields, table_name=table_name, package_name=package_name)
+	ctx = Context(buf, table=table,module_name=module_name,package_name=package_name,class_name=table.entity_name)
 	mapperTemplate.render_context(ctx)
 	# print(buf.getvalue())
-	mapper_dir = service_resource+'/com/'+package_name+'/'+module_name+'/service/repository/mapper/'
+	mapper_dir = service_resource+'/com/'+package_dir+'/'+module_name+'/service/repository/mapper/'
 	if not os.path.exists(mapper_dir):
 		os.makedirs(mapper_dir)
-	f = open(mapper_dir +class_name+'Mapper.xml', 'w')
+	f = open(mapper_dir +table.entity_name+'Mapper.xml', 'w')
 	f.write(buf.getvalue())
 	f.close()
 
@@ -211,7 +204,6 @@ def write_api(workspace_root, package_name, action):
 	package_dir =package_name.replace('.', '/')
 	generate_enum_class_flag = True
 	generate_dto_flag = True
-
 
 	module_name = action.module_name
 
@@ -256,7 +248,8 @@ def write_api(workspace_root, package_name, action):
 			f.write(buf.getvalue())
 			f.close()
 
-def write_controller(workspace_root, package_name, actions):
+def write_controllers(workspace_root, package_name, actions):
+	package_dir =package_name.replace('.', '/')
 	for module_name, g in groupby(actions,key=lambda x:x.module_name):
 		acs = list(g)
 		admin_contoller_root =workspace_root + module_name+'/admin-controller'
@@ -269,7 +262,7 @@ def write_controller(workspace_root, package_name, actions):
 		f.write(buf.getvalue())
 		f.close()
 
-		admin_contoller = admin_contoller_root +java_src+'/com/'+package_name+'/'+module_name+'/admin/'
+		admin_contoller = admin_contoller_root +java_src+'/com/'+package_dir+'/'+module_name+'/admin/'
 		mapperTemplate = Template(filename='./adminController.tl')
 		buf = StringIO()
 		ctx = Context(buf, actions=acs, package_name=package_name, module_name=module_name)
@@ -282,7 +275,78 @@ def write_controller(workspace_root, package_name, actions):
 		f.write(buf.getvalue())
 		f.close()
 
-def writer_service(workspace_root, package_name, table):
+def write_cotroller_services(workspace_root, package_name, actions):
+	package_dir =package_name.replace('.', '/')
+	for module_name, g in groupby(actions,key=lambda x:x.module_name):
+		acs = list(g)
+
+		service_root_dir = workspace_root + module_name+'/service'
+		service = service_root_dir+java_src+'/com/'+package_dir+'/'+module_name+'/service/'
+		service_resource = workspace_root + module_name+'/service'+resource_src
+		service_dir = service + 'command/'
+
+		mapperTemplate = Template(filename='./template/pom/service.tl',input_encoding='utf-8')
+		buf = StringIO()
+		ctx = Context(buf, package_name=package_name, module_name=module_name)
+		mapperTemplate.render_context(ctx)
+		f = open(service_root_dir+'/pom.xml', 'w')
+		f.write(buf.getvalue())
+		f.close()
+
+		mapperTemplate = Template(filename='./commandService.tl')
+		buf = StringIO()
+		ctx = Context(buf,actions=actions, module_name=module_name, package_name=package_name)
+		mapperTemplate.render_context(ctx)
+		if not os.path.exists(service_dir):
+			os.makedirs(service_dir)
+		f = open(service_dir + utils.firstUpower(module_name)+'CommandService.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
+		mapperTemplate = Template(filename='./commandServiceImpl.tl')
+		buf = StringIO()
+		ctx = Context(buf,actions=actions, module_name=module_name, package_name=package_name)
+		mapperTemplate.render_context(ctx)
+		# print(buf.getvalue())
+		service_dir = service+'command/impl/'
+		if not os.path.exists(service_dir):
+			os.makedirs(service_dir)
+		f = open(service_dir + utils.firstUpower(module_name)+'CommandServiceImpl.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
+
+
+def write_controller_service(workspace_root, package_name,module_name, actions):
+	# print(buf.getvalue())
+	module_name = action.module_name
+	service_root_dir = workspace_root + module_name+'/service'
+	service = service_root_dir+java_src+'/com/'+package_name+'/'+module_name+'/service/'
+	service_resource = workspace_root + module_name+'/service'+resource_src
+	service_dir = service + 'command/'
+
+	mapperTemplate = Template(filename='./commandService.tl')
+	buf = StringIO()
+	ctx = Context(buf, module_name=module_name, package_name=package_name)
+	mapperTemplate.render_context(ctx)
+	if not os.path.exists(service_dir):
+		os.makedirs(service_dir)
+	f = open(service_dir + action.class_name+'CommandService.java', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
+		# mapperTemplate = Template(filename='./commandServiceImpl.tl')
+		# buf = StringIO()
+		# ctx = Context(buf, class_name=class_name, module_name=module_name, package_name=package_name)
+		# mapperTemplate.render_context(ctx)
+		# # print(buf.getvalue())
+		# service_dir = service+'command/impl/'
+		# if not os.path.exists(service_dir):
+		# 	os.makedirs(service_dir)
+		# f = open(service_dir + class_name+'CommandServiceImpl.java', 'w')
+		# f.write(buf.getvalue())
+		# f.close()
+
+
+def write_service(workspace_root, package_name, table):
 	generate_mapper_class_flag = True
 	generate_mapper_xml_flag = True
 
@@ -313,29 +377,6 @@ def writer_service(workspace_root, package_name, table):
 		generate_mapper_xml(class_name,class_comment,fields,module_name,table_name,package_name,service_resource)
 
 	if id_Field is not None :
-		mapperTemplate = Template(filename='./commandService.tl')
-		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, module_name=module_name, package_name=package_name)
-		mapperTemplate.render_context(ctx)
-		# print(buf.getvalue())
-		service_dir = service + 'command/'
-		if not os.path.exists(service_dir):
-			os.makedirs(service_dir)
-		f = open(service_dir + class_name+'CommandService.java', 'w')
-		f.write(buf.getvalue())
-		f.close()
-
-		mapperTemplate = Template(filename='./commandServiceImpl.tl')
-		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, module_name=module_name, package_name=package_name)
-		mapperTemplate.render_context(ctx)
-		# print(buf.getvalue())
-		service_dir = service+'command/impl/'
-		if not os.path.exists(service_dir):
-			os.makedirs(service_dir)
-		f = open(service_dir + class_name+'CommandServiceImpl.java', 'w')
-		f.write(buf.getvalue())
-		f.close()
 
 		mapperTemplate = Template(filename='./repository.tl')
 		buf = StringIO()
@@ -425,10 +466,14 @@ def write_projects(workspace_root, package_name, tables,actions):
 	write_parent(workspace_root,package_name )
 	for t in tables:
 		write_module(workspace_root, package_name, t.module_name)
+		generate_do(workspace_root, package_name,t)
+		generate_mapper_class(workspace_root, package_name,t)
+		generate_mapper_xml(workspace_root, package_name,t)
 	for x in actions:
 		write_module(workspace_root, package_name, x.module_name)
 		write_api(workspace_root, package_name,x)
-	write_controller(workspace_root, package_name,actions)
+	write_controllers(workspace_root, package_name,actions)
+	write_cotroller_services(workspace_root, package_name,actions)
 
 
 def write_project(workspace_root, package_name, table, action):
