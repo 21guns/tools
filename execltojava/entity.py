@@ -1,9 +1,12 @@
 
 
+import re
+import utils
+
 class Field(object):
 
 	def __init__(self, name, jdbcType, type, comment, note, isId):
-		self.name = convert(name,'_',False)
+		self.name = utils.convert(name,'_',False)
 		self.comment = comment
 		self.field = name
 		self.note = note
@@ -21,10 +24,10 @@ class Field(object):
 		return self.isId
 
 	def __str__(self):
-		return 'Field:name=%s field=%s isId=%s' % (self.name, self.field, self.isId)
+		return 'Field:name=%s field=%s comment=%s isId=%s' % (self.name, self.field, self.comment, self.isId)
 	__repr__ = __str__
 
-def read_field(name, jdbcType, comment, note, isId):
+def read_db_field(name, jdbcType, comment, note, isId):
 	jdbcType = jdbcType.split('(')[0]
 	type = None
 	if "VARCHAR" in jdbcType:
@@ -54,13 +57,22 @@ def read_field(name, jdbcType, comment, note, isId):
 		return Field(name, jdbcType, type, comment, note, isId)
 	return None
 
+def read_interface_field(name, type, comment):
+	if not type.isalnum() :
+		return None
+	if len(re.findall('[\u4e00-\u9fa5]',type)) > 0 :#检查是否包含汉字
+		return None
+	if type == 'Number':
+		type = 'Integer'
+	return Field(name, '', type, comment, '', False)
+
 class Table(object):
 	def __init__(self, name, comment):
 		self.name = name
 		self.comment = comment
-		self.entity_name = convert(name,'_',True)
+		self.entity_name = utils.convert(name,'_',True)
 		self.fields = []
-		self.module_name = None
+		self.module_name = ''
 		self.id_field = None
 
 	def set_module_name(self, module_name):
@@ -79,19 +91,70 @@ class Table(object):
 		return 'Student:name=%s entity_name=%s fields=%s' % (self.name, self.entity_name, self.fields)
 	__repr__ = __str__
 
+class Action(object):
+	def __init__(self, url, http_method,comment):
+		self.url = url
+		self.http_method =http_method
+		self.request_params = []
+		self.response = []
+		self.is_request = False
+		self.comment =comment
+		self.module_name = ''
+		self.class_name = ''
+
+	def set_url(self,url, space_character):
+		# print( url.lstrip().rstrip().split(space_character))
+		self.url = url.lstrip().rstrip().split(space_character)[-1].replace('`', '')
+		self.module_name = self.url.split('/')[3]
+
+	def set_http_method(self,http_method, space_character):
+		# print( url.lstrip().rstrip().split(space_character))
+		self.http_method = http_method.lstrip().rstrip().split(space_character)[-1].replace('`', '')
+		lastUrl = self.url.split('/')[-1]
+		self.class_name = utils.firstUpower(self.http_method) + lastUrl
+
+	def set_module_name(self, module_name):
+		self.module_name = module_name
+
+	def check(self):
+		if not self.url.startswith('/') :
+			return False
+		if self.http_method not in ['POST','GET','PUT','DELETE']:
+			return False
+		return True
+
+	def add_field(self,field):
+		if field is not None :
+			if self.is_request:
+				self.request_params.append(field)
+			else:
+				self.response.append(field)
+	def set_params_type(self, type):
+		self.is_request = type
+
+	def is_get_id_method(self):
+		#get /ddd/{id}
+		lastUrl = self.url.split('/')[-1]
+		if lastUrl.startswith('{') and self.http_method == 'GET':
+			if len(self.request_params) <= 1 :
+				# print(self.http_method,self.url,self.request_params)
+				return True
+	def get_method_name(self):
+		return self.url.split('/')[-1]
+
+	def has_request(self):
+		if self.is_get_id_method() :
+			return False
+		return len(self.request_params) >0 
+
+	def has_response(self):
+		return len(self.response) >0 
+
+	def __str__(self):
+		return '%s:%s request_params=%s response=%s' % ( self.http_method,self.url, self.request_params, self.response)
+	__repr__ = __str__
+
 def read_table(line, space_character):
 	str = line.lstrip().rstrip().split(space_character)
 	return Table(str[1],str[0])
 
-def convert(one_string, space_character, firstUpower = False):    #one_string:输入的字符串；space_character:字符串的间隔符，以其做为分隔标志
-	string_list = str(one_string).split(space_character)    #将字符串转化为list
-	if not firstUpower:
-		first = string_list[0].lower()
-	else:
-		first = string_list[0].capitalize()
-	# print(first)
-	others = string_list[1:] 
-	others_capital = [word.capitalize() for word in others]      #str.capitalize():将字符串的首字母转化为大写
-	others_capital[0:0] = [first]
-	hump_string = ''.join(others_capital)     #将list组合成为字符串，中间无连接符。
-	return hump_string

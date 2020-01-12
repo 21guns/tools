@@ -1,4 +1,4 @@
-package com.${package_name}.${module_name}.api.dto;
+package com.${package_name}.${action.module_name}.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * ${class_comment}
+ * ${action.comment}
  */
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
@@ -25,9 +25,9 @@ import java.util.Objects;
 @Setter
 @Getter
 
-public class ${class_name}DTO implements Serializable {
+public class ${action.class_name}DTO implements Serializable {
 
-	% for a in fields:
+	% for a in action.request_params:
 	/**
  	 * ${a.comment}
 	 */

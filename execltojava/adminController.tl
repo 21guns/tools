@@ -13,46 +13,36 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import lombok.extern.slf4j.Slf4j;
-
-import com.${package_name}.${module_name}.service.query.${class_name}QueryService;
-import com.${package_name}.${module_name}.service.command.${class_name}CommandService;
-import com.${package_name}.${module_name}.api.dto.${class_name}DTO;
-import com.${package_name}.common.web.PagerParams;
+<%!
+	import utils
+%>
+% for a in actions:
+import com.${package_name}.${module_name}.api.dto.${a.class_name}DTO;
+% endfor
 
 /**
- * ${class_comment}
+ * 
  */
 @RestController
-@RequestMapping("/op/v1/${rest_url}")
+@RequestMapping("/op/v1/${module_name}")
 @Slf4j
-public class ${class_name}AdminController {
+public class ${utils.firstUpower(module_name)}AdminController {
 
-    @Autowired
-	private ${class_name}QueryService queryService;
-
-    @Autowired
-	private ${class_name}CommandService commandService;
-
-	@GetMapping("/{id}")
-    public MessageResult<${class_name}DTO> get(@PathVariable String id) {
-
-		return MessageResult.success(queryService.getById(id).orElse(null));   
-	} 
-
-	@GetMapping
-    public MessageResult page(${class_name}DTO dto, PageData pagerParams) {
-
-		return MessageResult.successPage(queryService.page(dto, pagerParams));   
-	} 
-
-	@PostMapping
-    public MessageResult save(@RequestBody ${class_name}DTO dto) {
-    	return commandService.save(dto);
-	} 
-
-	@PostMapping("/{id}")
-    public MessageResult update(@PathVariable String id, @RequestBody ${class_name}DTO dto) {
+	% for a in actions:
+	<%
+		params_type = a.class_name + 'DTO dto'
+		method_name = a.get_method_name()
+		if a.is_get_id_method():
+			params_type = '@PathVariable String id'
+			method_name = 'get'
+	%>
+	/**
+ 	 * ${a.comment}
+	 */
+	@${utils.firstUpower(a.http_method)}Mapping("${a.url}")
+    public MessageResult ${method_name}(${params_type}) {
   		return commandService.update(dto);
 	} 
+	% endfor
 
 }

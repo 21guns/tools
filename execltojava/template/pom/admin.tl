@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<%v = '${com.version}'%>
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.ktjr.lcl</groupId>
+		<groupId>com.${package_name.replace('/', '.')}</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.ktjr.lcl.loan</groupId>
+	<groupId>com.${package_name.replace('/', '.')}.${module_name}</groupId>
 	<artifactId>admin-controller</artifactId>
-	<version>${lcl.version}</version>
+	<version>${v}</version>
 	<packaging>jar</packaging>
-	<name>loan-admin-controller</name>
+	<name>${module_name}-admin-controller</name>
 
 	<properties>
 	</properties>
@@ -38,9 +39,9 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.ktjr.lcl.loan</groupId>
+		<groupId>com.${package_name.replace('/', '.')}.${module_name}</groupId>
 			<artifactId>service</artifactId>
-			<version>${lcl.version}</version>
+			<version>${v}</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
