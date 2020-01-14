@@ -262,7 +262,7 @@ def write_controllers(workspace_root, package_name, actions):
 		f.write(buf.getvalue())
 		f.close()
 
-		admin_contoller = admin_contoller_root +java_src+'/com/'+package_dir+'/'+module_name+'/admin/'
+		admin_contoller = admin_contoller_root +java_src+'/com/'+package_dir+'/'+module_name+'/'
 		mapperTemplate = Template(filename='./adminController.tl')
 		buf = StringIO()
 		ctx = Context(buf, actions=acs, package_name=package_name, module_name=module_name)
@@ -283,7 +283,7 @@ def write_cotroller_services(workspace_root, package_name, actions):
 		service_root_dir = workspace_root + module_name+'/service'
 		service = service_root_dir+java_src+'/com/'+package_dir+'/'+module_name+'/service/'
 		service_resource = workspace_root + module_name+'/service'+resource_src
-		service_dir = service + 'command/'
+		service_dir = service + 'service/'
 
 		mapperTemplate = Template(filename='./template/pom/service.tl',input_encoding='utf-8')
 		buf = StringIO()
@@ -307,7 +307,7 @@ def write_cotroller_services(workspace_root, package_name, actions):
 		ctx = Context(buf,actions=actions, module_name=module_name, package_name=package_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
-		service_dir = service+'command/impl/'
+		service_dir = service_dir+'impl/'
 		if not os.path.exists(service_dir):
 			os.makedirs(service_dir)
 		f = open(service_dir + utils.firstUpower(module_name)+'CommandServiceImpl.java', 'w')

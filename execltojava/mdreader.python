@@ -30,21 +30,25 @@ def read_interface_field(str,space_character):
 		ss.append(x.replace('`', ''))
 	return entity.read_interface_field(ss[1], ss[2], ss[4])
 #表结构
-table_file = open('/Volumes/data/Develop/workspace/ktjr/loan-collection/doc/技术文档/系统设计/数据结构.md', 'r')
+table_file = open('./template/设计规范/数据结构.md', 'r')
 tables = []
 current_table = None
+current_module_name = ''
 for l in table_file.readlines():
-	line = l.strip() # 把末尾的'\n'删掉
-	if line.startswith('#'):# 邮件模板配置表 email_notification
-		current_table = entity.read_table(line[1:], ' ')
-		current_table.set_module_name('test')
+	line = l.strip().lstrip().rstrip() # 把末尾的'\n'删掉
+	if line.count('#') == 2  : # ## 模块英文名
+		current_module_name = line.split(' ')[1]
+	if line.count('#') == 3:# ### 邮件模板配置表 email_notification
+		line = line.replace('#','').lstrip().rstrip()
+		current_table = entity.read_table(line, ' ')
+		current_table.set_module_name(current_module_name)
 		tables.append(current_table)
 	if line.startswith('|'):
 		f = read_db_field(line, '|')
 		if current_table != None:
 			current_table.add_fields(f);
 #接口文档
-interfacr_filr = open('/Volumes/data/Develop/workspace/ktjr/loan-collection/doc/技术文档/接口文档/institutions-apis.md', 'r')
+interfacr_filr = open('./template/设计规范/接口文档.md', 'r')
 actions = []
 current_action = None
 response =[]
@@ -53,7 +57,7 @@ for i,l in enumerate(lines):
 	line = l.strip().lstrip().rstrip() # 把末尾的'\n'删掉
 	if len(line) == 0:
 		continue
-	if line.startswith('###') :
+	if line.startswith('###') : #接口中文名
 		current_action = entity.Action('','', line.split(' ')[1])
 		actions.append(current_action)
 	if line.find('接口路径') != -1:#  - 接口路径: `/op/v1/institutions/search`
