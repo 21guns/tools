@@ -47,7 +47,7 @@
 		if (len(values_line)) > 0:
 			values.append(values_line)
 	%>
-	<resultMap id="${class_name}ResultMap" type="com.${package_name}.${module_name}.service.entity.${class_name}DO" >
+	<resultMap id="${class_name}ResultMap" type="com.${package_name}.${module_name}.api.vo.${class_name}VO" >
 		% for index in  range(len(fields)):
 			% if fields[index].name == "id" :
 		<id column="id" property="id" jdbcType="${fields[index].jdbcType}" />
@@ -55,8 +55,6 @@
 		<result column="${fields[index].field}" property="${fields[index].name}" jdbcType="${fields[index].jdbcType}" />
  			% endif 
 		% endfor
-  	</resultMap>
-  	<resultMap id="${class_name}DTOResultMap" type="com.${package_name}.${module_name}.api.dto.${class_name}DTO" extends="${class_name}ResultMap">
   	</resultMap>
 
 	<sql id="columns">
@@ -67,13 +65,9 @@
 		${',\n\t\t'.join(colums_as) }
   	</sql>
 
-    <select id="pageList" resultType="com.${package_name}.${module_name}.api.dto.${class_name}DTO">
-    	SELECT <include refid="columns_as" /> FROM ${table_name}
-    </select>
-
-    <select id="selectById" resultType="com.${package_name}.${module_name}.api.dto.${class_name}DTO" parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" resultMap="${class_name}ResultMap">
         SELECT
-        <include refid="columns_as" />
+        <include refid="columns" />
         FROM ${table_name}
         WHERE id = #{id}
     </select>
@@ -84,7 +78,34 @@
         (${',\n\t\t'.join(values)})
     </insert>
 
-    <update id="update" parameterType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
+    <insert id="insertSelective" parameterType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
+        INSERT INTO ${table_name}
+	 	<trim prefix="(" suffix=")" suffixOverrides=",">
+	      % for index in  range(len(fields)):
+         	<if test="${fields[index].name} != null">
+                ${fields[index].field },
+            </if>
+			% endfor
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        	% for index in  range(len(fields)):
+            <if test="${fields[index].name} != null">
+                #{${fields[index].name}, jdbcType=${fields[index].jdbcType}},
+            </if>
+			% endfor
+    	</trim>
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
+	    UPDATE institution
+	    <set>
+	       % for index in  range(len(fields)):
+	        ${fields[index].field }= #{${fields[index].name}, jdbcType=${fields[index].jdbcType}},
+			% endfor
+	    </set>
+	    WHERE id = #{id,jdbcType=BIGINT}
+ 	</update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
         UPDATE ${table_name}
         <set>
         	% for index in  range(len(fields)):

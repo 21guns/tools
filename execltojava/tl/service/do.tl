@@ -1,13 +1,8 @@
 package com.${package_name}.${module_name}.service.entity;
-
 <%
-	hasId = True
-	class_name =table.entity_name
+	hasId = table.has_id()
 	id_Field =table.get_id_field()
-	if id_Field is None :
-		hasId = False
 %>
-
 % if hasId:
 	% if id_Field.type == "String" :
 import com.guns21.support.entity.StringIDEntity;
@@ -51,17 +46,17 @@ import java.util.Objects;
 @Getter
 % if hasId:
 	% if id_Field.type == "String" :
-public class ${class_name}DO extends StringIDEntity {
+public class ${class_name} extends StringIDEntity {
 	% elif id_Field.type == "Long":
-public class ${class_name}DO extends LongIDEntity {
+public class ${class_name} extends LongIDEntity {
 	% else :
-public class ${class_name}DO extends StringIDEntity {
+public class ${class_name} extends StringIDEntity {
 	% endif
 % else:
-public class ${class_name}DO implements Serializable {
+public class ${class_name} implements Serializable {
 % endif 
 
-	% for a in table.fields:
+% for a in table.fields:
 	% if hasId:
 		% if a.name not in ["id","gmt_created","gmt_modified"]:
 
@@ -79,7 +74,7 @@ public class ${class_name}DO implements Serializable {
 	 */
 	private ${a.type} ${a.name};
 	%endif
-	% endfor
+% endfor
 
 
 }

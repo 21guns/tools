@@ -11,36 +11,47 @@
 	</parent>
 
 	<groupId>com.${package_name.replace('/', '.')}.${module_name}</groupId>
-	<artifactId>service</artifactId>
+	<artifactId>controller</artifactId>
 	<version>${v}</version>
 	<packaging>jar</packaging>
-	<name>${module_name}-service</name>
+	<name>${module_name}-controller</name>
 
 	<properties>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.${package_name.replace('/', '.')}.${module_name}</groupId>
-			<artifactId>api</artifactId>
-			<version>${v}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<artifactId>spring-boot-starter-undertow</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
+		<groupId>com.${package_name.replace('/', '.')}.${module_name}</groupId>
+			<artifactId>service</artifactId>
+			<version>${v}</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.guns21</groupId>
+			<artifactId>spring-data</artifactId>
 		</dependency>
 	</dependencies>
-
-	<build>
-	</build>
 
 </project>

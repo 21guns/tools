@@ -81,6 +81,9 @@ class Table(object):
 	def get_id_field(self):
 		return self.id_field
 
+	def has_id(self):
+		return not self.id_field is None
+
 	def add_fields(self, field):
 		if field is not None :
 			if field.is_id():
@@ -90,6 +93,10 @@ class Table(object):
 	def __str__(self):
 		return 'Student:name=%s entity_name=%s fields=%s' % (self.name, self.entity_name, self.fields)
 	__repr__ = __str__
+
+def read_table(line, space_character):
+	str = line.lstrip().rstrip().split(space_character)
+	return Table(str[1],str[0])
 
 class Action(object):
 	def __init__(self, url, http_method,comment):
@@ -124,7 +131,9 @@ class Action(object):
 		if self.http_method not in ['POST','GET','PUT','DELETE']:
 			return False
 		return True
-
+	def is_get_method(self):
+		return self.http_method in ['GET'
+		]
 	def add_field(self,field):
 		if field is not None :
 			if self.is_request:
@@ -160,7 +169,5 @@ class Action(object):
 		return '%s:%s request_params=%s response=%s' % ( self.http_method,self.url, self.request_params, self.response)
 	__repr__ = __str__
 
-def read_table(line, space_character):
-	str = line.lstrip().rstrip().split(space_character)
-	return Table(str[1],str[0])
+
 

@@ -1,4 +1,4 @@
-package com.${package_name}.${module_name}.admin.controller;
+package com.${package_name}.${module_name}.controller;
 
 import java.util.Objects;
 
@@ -29,7 +29,7 @@ import com.${package_name}.${module_name}.api.dto.${a.class_name}DTO;
 @RestController
 ##@RequestMapping("/op/v1/${module_name}")
 @Slf4j
-public class ${utils.firstUpower(module_name)}AdminController {
+public class ${utils.firstUpower(module_name)}Controller {
 
 	% for a in actions:
 	<%
