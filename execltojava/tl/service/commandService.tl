@@ -14,18 +14,18 @@ public interface ${utils.firstUpower(module_name)}CommandService {
 	% for a in actions:
 		% if not a.is_get_method() :
 	<%
-		params_type = a.class_name + 'DTO dto'
-		method_name = a.get_method_name()
-		if not a.has_request():
-			params_type = ''
-		if a.is_get_id_method():
-			params_type = '@PathVariable String id'
-			method_name = 'get'
+		params = ''
+		for n in a.get_path_variable_name():
+			params += 'Long ' + n +', '
+		if a.has_request():
+			params += a.class_name + 'DTO dto'
+		if params.endswith(', '):
+			params = params[:-2]
 	%>
 	/**
  	 * ${a.comment}
 	 */
-    MessageResult ${method_name}(${params_type}) ;
+    MessageResult ${a.get_method_name()}(${params});
     	% endif 
 	% endfor
 

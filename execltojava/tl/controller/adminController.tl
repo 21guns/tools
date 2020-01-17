@@ -34,21 +34,24 @@ public class ${utils.firstUpower(module_name)}AdminController {
 	@Autowired
 	private ${utils.firstUpower(module_name)}QueryService ${module_name}QueryService;
 
+	@Autowired
+	private ${utils.firstUpower(module_name)}QueryService ${module_name}CommandService;
+
 	% for a in actions:
 	<%
-		params_type = a.class_name + 'DTO dto'
-		method_name = a.get_method_name()
-		if not a.has_request():
-			params_type = ''
-		if a.is_get_id_method():
-			params_type = '@PathVariable String id'
-			method_name = 'get'
+		params = ''
+		for n in a.get_path_variable_name():
+			params += '@PathVariable Long ' + n +', '
+		if a.has_request():
+			params += a.class_name + 'DTO dto'
+		if params.endswith(', '):
+			params = params[:-2]
 	%>
 	/**
  	 * ${a.comment}
 	 */
 	@${utils.firstUpower(a.http_method)}Mapping("${a.url}")
-    public MessageResult ${method_name}(${params_type}) {
+    public MessageResult ${a.get_method_name()}(${params}) {
     	return MessageResult.success();
 	} 
 	% endfor

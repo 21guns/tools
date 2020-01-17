@@ -12,7 +12,7 @@ def read_db_field(str,space_character):
 	comment_index = 2
 	jdbcType_index = 4
 	note_index = 9
-	s = str.lstrip().split(space_character)
+	s = str.lstrip().rstrip().split(space_character)
 	ss = []
 	for x in s:
 		x = x.lstrip().rstrip()
@@ -23,12 +23,13 @@ def read_db_field(str,space_character):
 #str值为| 字段      | 类型    | 描述                  |
 def read_interface_field(str,space_character):
 	# print(str)
-	l = line.split(space_character)
+	l = line.lstrip().rstrip().split(space_character)
 	ss = []
 	for x in l:
 		x = x.lstrip().rstrip()
 		ss.append(x.replace('`', ''))
-	return entity.read_interface_field(ss[1], ss[2], ss[4])
+	comment = ss[4] if len(ss[4])>0 else ss[3] # (lambda :ss[4],lambda : ss[3])[len(ss[4]) > 0]() 
+	return entity.read_interface_field(ss[1], ss[2],comment)
 #表结构
 table_file = open('./template/设计规范/数据结构.md', 'r')
 tables = []
@@ -51,8 +52,8 @@ for l in table_file.readlines():
 interfacr_filr = open('./template/设计规范/接口文档.md', 'r')
 actions = []
 current_action = None
-response =[]
 lines = interfacr_filr.readlines()
+params_type = False
 for i,l in enumerate(lines):
 	line = l.strip().lstrip().rstrip() # 把末尾的'\n'删掉
 	if len(line) == 0:
@@ -61,24 +62,31 @@ for i,l in enumerate(lines):
 		current_action = entity.Action('','', line.split(' ')[1])
 		actions.append(current_action)
 	if line.find('接口路径') != -1:#  - 接口路径: `/op/v1/institutions/search`
-		current_action.set_url(line,' ')
+		current_action.set_url(line.split(':')[-1])
 		if not current_action.url.startswith('/') :
 			print('\033[1;32;43m url is error %s and 第%d行 行内容 %s \033[0m' % (current_action.url, i,line))
 	if line.find('HTTP Method') != -1:# - HTTP Method: `GET`
-		current_action.set_http_method(line,' ')
+		current_action.set_http_method(line.split(':')[-1])
 		# print(current_action)
 	if line.find('请求参数格式') != -1:#  - 请求参数格式: `QUERY STRING`
-		pass
+		current_action.set_request_type(line.split(':')[-1])
 	if line.find('请求参数字段') != -1:#  - 请求参数字段
-		current_action.set_params_type(True)
+		params_type = True
 		if lines[i+1].find('|') == -1: #无参数
 			pass
-	if line.find('响应') != -1:#  - 响应
-		current_action.set_params_type(False)
+	if line.find('响应类型') != -1:#  - 响应类型
+		print(line.split(':')[-1])
+		current_action.set_response_type(line.split(':')[-1])
+		pass
+	if line.find('响应字段') != -1:#  - 响应字段
+		params_type = False
 
 	if line.startswith('|'):
 		f = read_interface_field(line, '|')
-		current_action.add_field(f)
+		if params_type :
+			current_action.add_request_params(f)
+		else :
+			current_action.add_response_params(f)
 		if f is not None and f.name.find('字段') != -1 :
 			pass
 

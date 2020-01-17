@@ -8,8 +8,13 @@ import java.util.Optional;
 import com.guns21.data.domain.result.MessageResult;
 import com.guns21.data.domain.result.PageData;
 % for a in actions:
-	% if a.has_request() and a.is_get_method():
+	% if a.is_get_method():
+		% if a.has_request():
 import com.${package_name}.${module_name}.api.dto.${a.class_name}DTO;
+		% endif
+		% if a.has_response():
+import com.${package_name}.${module_name}.api.vo.${a.class_name}VO;
+		% endif
 	% endif
 % endfor
 
@@ -18,18 +23,19 @@ public interface ${utils.firstUpower(module_name)}QueryService {
 	% for a in actions:
 		% if a.is_get_method() :
 	<%
-		params_type = a.class_name + 'DTO dto'
-		method_name = a.get_method_name()
-		if not a.has_request():
-			params_type = ''
-		if a.is_get_id_method():
-			params_type = 'String id'
-			method_name = 'get'
+		params = ''
+		for n in a.get_path_variable_name():
+			params += 'Long ' + n +', '
+		if a.has_request():
+			params += a.class_name + 'DTO dto'
+		if params.endswith(', '):
+			params = params[:-2]
+
 	%>
 	/**
  	 * ${a.comment}
 	 */
-    public MessageResult ${method_name}(${params_type}) ;
+    ${a.response_type}${a.class_name}VO ${a.get_method_name()}(${params}) ;
     	% endif 
 	% endfor
 

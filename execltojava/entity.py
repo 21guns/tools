@@ -98,29 +98,39 @@ def read_table(line, space_character):
 	str = line.lstrip().rstrip().split(space_character)
 	return Table(str[1],str[0])
 
+ACTION_RESPONSE_TYPE = {
+	'LIST':'LIST',
+	'PAGE':'PAGE',
+	'ENTITY':'ENTITY'
+}
+ACTION_REQUEST_TYPE = {
+	'PATH':'PATH',
+	'QUERY':'QUERY'
+}
 class Action(object):
 	def __init__(self, url, http_method,comment):
 		self.url = url
 		self.http_method =http_method
 		self.request_params = []
+		self.request_type = ACTION_REQUEST_TYPE['QUERY']
 		self.response = []
-		self.is_request = False
+		self.response_type = ACTION_RESPONSE_TYPE['LIST']
 		self.comment =comment
 		self.module_name = ''
 		self.class_name = ''
+		self.url_path = None
 
-	def set_url(self,url, space_character):
-		# print( url.lstrip().rstrip().split(space_character))
-		self.url = url.lstrip().rstrip().split(space_character)[-1].replace('`', '')
-		self.module_name = self.url.split('/')[3]
+	def set_url(self,url):
+		# print( url.lstrip().rstrip())
+		self.url = url.lstrip().rstrip().replace('`', '')
+		self.url_path = url_path(self.url)
+		#/op/v1/module_name 
+		self.module_name = self.url_path.path[3]
 
-	def set_http_method(self,http_method, space_character):
-		# print( url.lstrip().rstrip().split(space_character))
-		self.http_method = http_method.lstrip().rstrip().split(space_character)[-1].replace('`', '')
-		lastUrl = self.url.split('/')[-1]
-		if lastUrl.startswith('{') :
-			lastUrl =self.url.split('/')[-2]
-		self.class_name = utils.firstUpower(self.http_method) + utils.firstUpower(lastUrl)
+	def set_http_method(self,http_method):
+		# print( http_method.lstrip().rstrip())
+		self.http_method = http_method.lstrip().rstrip().replace('`', '')
+		self.class_name = utils.firstUpower(self.http_method) + utils.firstUpower(self.url_path.last_path_name())
 
 	def set_module_name(self, module_name):
 		self.module_name = module_name
@@ -131,17 +141,23 @@ class Action(object):
 		if self.http_method not in ['POST','GET','PUT','DELETE']:
 			return False
 		return True
+
 	def is_get_method(self):
-		return self.http_method in ['GET'
-		]
-	def add_field(self,field):
+		return self.http_method in ['GET']
+
+	def add_request_params(self,field):
 		if field is not None :
-			if self.is_request:
-				self.request_params.append(field)
-			else:
-				self.response.append(field)
-	def set_params_type(self, type):
-		self.is_request = type
+			self.request_params.append(field)
+
+	def set_request_type(self, type):
+		self.request_type = type.lstrip().rstrip().replace('`', '')
+
+	def add_response_params(self,field):
+		if field is not None :
+			self.response.append(field)
+
+	def set_response_type(self, type):
+		self.response_type = type.lstrip().rstrip().replace('`', '')
 
 	def is_get_id_method(self):
 		#get /ddd/{id}
@@ -151,11 +167,12 @@ class Action(object):
 				# print(self.http_method,self.url,self.request_params)
 				return True
 	def get_method_name(self):
-		lastUrl = self.url.split('/')[-1]
-		if lastUrl.startswith('{') :
-			return self.http_method.lower() +utils.firstUpower(self.url.split('/')[-2])
-
-		return self.url.split('/')[-1]
+		method_name = self.url_path.last_path_name()
+		if method_name in ['id','no']:
+			method_name = "By" + utils.firstUpower(method_name)
+		else:
+			method_name = utils.firstUpower(method_name)
+		return self.http_method.lower() + method_name
 
 	def has_request(self):
 		if self.is_get_id_method() :
@@ -165,9 +182,35 @@ class Action(object):
 	def has_response(self):
 		return len(self.response) >0 
 
+	def has_path_variable(self):
+		return len(self.url_path.path_variable_index)>0
+
+	def get_path_variable_name(self):
+		return self.url_path.path_variable_name
+
 	def __str__(self):
 		return '%s:%s request_params=%s response=%s' % ( self.http_method,self.url, self.request_params, self.response)
 	__repr__ = __str__
 
+class url_path(object):
+	def __init__(self, url):
+		self.url = url
+		self.path = self.url.lstrip().rstrip().split('/')
+		self.path_variable_name = []
+		self.path_variable_index = []
+		for i,p in enumerate(self.path):
+			if p.startswith('{'):
+				self.path_variable_name.append(p.replace('{','').replace('}',''))
+				self.path_variable_index.append(i)
+	def last_path(self):
+		return self.path[-1]
 
+	def last_path_name(self):
+		if (self.last_path().startswith('{')):
+			return self.path_variable_name[-1]
+		else :
+			return self.last_path()
 
+	def __str__(self):
+		return '%s:%s request_params=%s response=%s' % ( self.http_method,self.url, self.request_params, self.response)
+	__repr__ = __str__
