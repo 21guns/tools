@@ -23,6 +23,7 @@ import com.${package_name}.${module_name}.api.dto.${a.class_name}DTO;
 	% endif
 % endfor
 import com.${package_name}.${module_name}.service.service.${utils.firstUpower(module_name)}QueryService;
+import com.${package_name}.${module_name}.service.service.${utils.firstUpower(module_name)}CommandService;
 /**
  * 
  */
@@ -35,24 +36,19 @@ public class ${utils.firstUpower(module_name)}AdminController {
 	private ${utils.firstUpower(module_name)}QueryService ${module_name}QueryService;
 
 	@Autowired
-	private ${utils.firstUpower(module_name)}QueryService ${module_name}CommandService;
+	private ${utils.firstUpower(module_name)}CommandService ${module_name}CommandService;
 
 	% for a in actions:
-	<%
-		params = ''
-		for n in a.get_path_variable_name():
-			params += '@PathVariable Long ' + n +', '
-		if a.has_request():
-			params += a.class_name + 'DTO dto'
-		if params.endswith(', '):
-			params = params[:-2]
-	%>
 	/**
  	 * ${a.comment}
 	 */
-	@${utils.firstUpower(a.http_method)}Mapping("${a.url}")
-    public MessageResult ${a.get_method_name()}(${params}) {
-    	return MessageResult.success();
+	${a.get_controller_mapping()}
+    public MessageResult ${a.get_method_name()}(${a.get_controller_method_params()}) {
+    	% if a.is_get_method():
+    	return MessageResult.success(${module_name}QueryService.${a.get_method_name()}(${a.get_controller_method_invoke_params()}));
+    	% else:
+    	return ${module_name}CommandService.${a.get_method_name()}(${a.get_controller_method_invoke_params()});
+    	% endif
 	} 
 	% endfor
 

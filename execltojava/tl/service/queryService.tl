@@ -22,20 +22,11 @@ public interface ${utils.firstUpower(module_name)}QueryService {
 
 	% for a in actions:
 		% if a.is_get_method() :
-	<%
-		params = ''
-		for n in a.get_path_variable_name():
-			params += 'Long ' + n +', '
-		if a.has_request():
-			params += a.class_name + 'DTO dto'
-		if params.endswith(', '):
-			params = params[:-2]
-
-	%>
+		
 	/**
  	 * ${a.comment}
 	 */
-    ${a.response_type}${a.class_name}VO ${a.get_method_name()}(${params}) ;
+    ${a.get_service_method_return_type()} ${a.get_method_name()}(${a.get_service_method_params()}) ;
     	% endif 
 	% endfor
 

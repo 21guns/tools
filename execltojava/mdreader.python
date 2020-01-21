@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import entity
-import java
+from lib import entity
+from lib import javaclass
+from lib import generatorjava
 from itertools import groupby
 
 #str值为|      | ID                | `id`           | `BIGINT(19)`   | Y    | N        | Y        |        |                                                   |
@@ -59,7 +60,7 @@ for i,l in enumerate(lines):
 	if len(line) == 0:
 		continue
 	if line.startswith('###') : #接口中文名
-		current_action = entity.Action('','', line.split(' ')[1])
+		current_action = javaclass.new_java_class('','', line.split(' ')[1])
 		actions.append(current_action)
 	if line.find('接口路径') != -1:#  - 接口路径: `/op/v1/institutions/search`
 		current_action.set_url(line.split(':')[-1])
@@ -75,7 +76,7 @@ for i,l in enumerate(lines):
 		if lines[i+1].find('|') == -1: #无参数
 			pass
 	if line.find('响应类型') != -1:#  - 响应类型
-		print(line.split(':')[-1])
+		# print(line.split(':')[-1])
 		current_action.set_response_type(line.split(':')[-1])
 		pass
 	if line.find('响应字段') != -1:#  - 响应字段
@@ -102,8 +103,8 @@ for i,l in enumerate(lines):
 
 # print(current_table)
 workspace_root='/Volumes/data/Develop/workspace/ktjr/loan-collection1/'
-# java.write_parent(workspace_root,'ktjr.lcl')
-# java.write_project(workspace_root,'ktjr.lcl',current_table, current_action)
-java.write_projects(workspace_root,'kk.lcl',tables, actions)
+# write_parent(workspace_root,'ktjr.lcl')
+# write_project(workspace_root,'ktjr.lcl',current_table, current_action)
+generatorjava.write_projects(workspace_root,'kk.lcl',tables, actions)
 
 

@@ -23,19 +23,11 @@ public class ${utils.firstUpower(module_name)}CommandServiceImpl implements ${ut
 
 	% for a in actions:
 		% if not a.is_get_method() :
-	<%
-		params_type = a.class_name + 'DTO dto'
-		method_name = a.get_method_name()
-		if not a.has_request():
-			params_type = ''
-		if a.is_get_id_method():
-			params_type = 'String id'
-			method_name = 'get'
-	%>
+		
 	/**
  	 * ${a.comment}
 	 */
-    public MessageResult ${method_name}(${params_type}) {
+    public MessageResult  ${a.get_method_name()}(${a.get_service_method_params()}) {
     	return MessageResult.success();
 	} 
     	% endif 

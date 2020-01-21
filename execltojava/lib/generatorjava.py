@@ -8,7 +8,7 @@ from mako.runtime import Context
 from io import StringIO
 import os
 from itertools import groupby
-import entity
+from lib.entity import *
 import utils
 
 java_src = '/src/main/java'
