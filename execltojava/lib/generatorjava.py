@@ -372,84 +372,37 @@ def write_services(workspace_root, package_name, actions):
 		f.write(buf.getvalue())
 		f.close()
 
+def write_repositories(workspace_root, package_name, actions):
+	package_dir =package_name.replace('.', '/')
+	for module_name, g in groupby(actions,key=lambda x:x.module_name):
+		acs = list(g)
 
-def write_service(workspace_root, package_name, table):
-	generate_mapper_class_flag = True
-	generate_mapper_xml_flag = True
+		service_root_dir = workspace_root + module_name+'/service'
+		service = service_root_dir+java_src+'/com/'+package_dir+'/'+module_name+'/service/'
+		service_resource = workspace_root + module_name+'/service'+resource_src
+		service_dir = service + 'service/'
 
-	class_name = table.entity_name
-	class_comment = table.comment
-	fields = table.fields
-	table_name = table.name
-	id_Field =table.get_id_field()
-	module_name = table.module_name
-
-	service_root_dir = workspace_root + module_name+'/service'
-	service = service_root_dir+java_src+'/com/'+package_name+'/'+module_name+'/service/'
-	service_resource = workspace_root + module_name+'/service'+resource_src
-
-	mapperTemplate = Template(filename='./tl/pom/service.tl',input_encoding='utf-8')
-	buf = StringIO()
-	ctx = Context(buf, package_name=package_name, module_name=module_name)
-	mapperTemplate.render_context(ctx)
-	f = open(service_root_dir+'/pom.xml', 'w')
-	f.write(buf.getvalue())
-	f.close()
-
-	package_name =package_name.replace('/', '.')
-	if generate_mapper_class_flag :
-		generate_mapper_class(class_name,class_comment,fields,module_name,table_name,package_name,service)
-
-	if generate_mapper_xml_flag :
-		generate_mapper_xml(class_name,class_comment,fields,module_name,table_name,package_name,service_resource)
-
-	if id_Field is not None :
-
-		mapperTemplate = Template(filename='./repository.tl')
+		mapperTemplate = Template(filename='./tl/service/repository.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
+		ctx = Context(buf,actions=actions, module_name=module_name, package_name=package_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service + 'repository/'
 		if not os.path.exists(service_dir):
 			os.makedirs(service_dir)
-		f = open(service_dir + class_name+'Repository.java', 'w')
+		f = open(service_dir + utils.firstUpower(module_name)+'Repository.java', 'w')
 		f.write(buf.getvalue())
 		f.close()
 
-		mapperTemplate = Template(filename='./repositoryImpl.tl')
+		mapperTemplate = Template(filename='./tl/service/repositoryImpl.tl')
 		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
+		ctx = Context(buf,actions=actions, module_name=module_name, package_name=package_name)
 		mapperTemplate.render_context(ctx)
 		# print(buf.getvalue())
 		service_dir = service+'repository/impl/'
 		if not os.path.exists(service_dir):
 			os.makedirs(service_dir)
-		f = open(service_dir + class_name+'RepositoryImpl.java', 'w')
-		f.write(buf.getvalue())
-		f.close()
-
-		mapperTemplate = Template(filename='./queryService.tl')
-		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
-		mapperTemplate.render_context(ctx)
-		# print(buf.getvalue())
-		service_dir = service + 'query/'
-		if not os.path.exists(service_dir):
-			os.makedirs(service_dir)
-		f = open(service_dir + class_name+'QueryService.java', 'w')
-		f.write(buf.getvalue())
-		f.close()
-
-		mapperTemplate = Template(filename='./queryServiceImpl.tl')
-		buf = StringIO()
-		ctx = Context(buf, class_name=class_name, entity_name=class_name+"DTO", module_name=module_name, package_name=package_name)
-		mapperTemplate.render_context(ctx)
-		# print(buf.getvalue())
-		service_dir = service+'query/impl/'
-		if not os.path.exists(service_dir):
-			os.makedirs(service_dir)
-		f = open(service_dir + class_name+'QueryServiceImpl.java', 'w')
+		f = open(service_dir +  utils.firstUpower(module_name) +'RepositoryImpl.java', 'w')
 		f.write(buf.getvalue())
 		f.close()
 
@@ -500,7 +453,7 @@ def write_projects(workspace_root, package_name, tables,actions):
 		write_api(workspace_root, package_name,x)
 	write_controllers(workspace_root, package_name,actions)
 	write_services(workspace_root, package_name,actions)
-
+	write_repositories(workspace_root, package_name,actions)
 
 def write_project(workspace_root, package_name, table, action):
 	write_module(workspace_root, package_name, action.module_name)

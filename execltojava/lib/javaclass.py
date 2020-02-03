@@ -15,9 +15,11 @@ class Java_Class(entity.Action):
 			params += self.class_name + 'DTO dto'
 		if params.endswith(', '):
 			params = params[:-2]
+		if self.response_type == entity.ACTION_RESPONSE_TYPE['PAGE']:
+			params += ', PageData pagination'
 		return params
 	def get_controller_method_invoke_params(self):
-		return self.get_controller_method_params().replace('@PathVariable Long ','').replace(self.class_name + 'DTO ' , '')
+		return self.get_controller_method_params().replace('@PathVariable Long ','').replace(self.class_name + 'DTO ' , '').replace('PageData ' , '')
 	
 	def get_controller_mapping(self):
 		return '@' + utils.firstUpower(self.http_method) + 'Mapping("'+self.url+'")'
@@ -30,10 +32,12 @@ class Java_Class(entity.Action):
 			params += self.class_name + 'DTO dto'
 		if params.endswith(', '):
 			params = params[:-2]
+		if self.response_type == entity.ACTION_RESPONSE_TYPE['PAGE']:
+			params += ', PageData pagination'
 		return params
 
 	def get_service_method_return_type(self):
-		print(self.response_type)
+		# print(self.response_type)
 		if self.response_type == entity.ACTION_RESPONSE_TYPE['LIST']:
 			return 'List<' + self.class_name + 'VO>'
 		elif self.response_type == entity.ACTION_RESPONSE_TYPE['PAGE']:

@@ -30,13 +30,16 @@ import com.${package_name}.${module_name}.api.vo.${a.class_name}VO;
 @Slf4j
 public class ${utils.firstUpower(module_name)}QueryServiceImpl implements ${utils.firstUpower(module_name)}QueryService {
 
+    //@Autowired Mapper
+    
     % for a in actions:
         % if a.is_get_method() :
     /**
      * ${a.comment}
      */
     public  ${a.get_service_method_return_type()} ${a.get_method_name()}(${a.get_service_method_params()}) {
-        return MessageResult.success();
+        //TODO
+        return null;
     } 
         % endif 
     % endfor

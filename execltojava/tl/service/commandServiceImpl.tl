@@ -1,4 +1,4 @@
-package com.${package_name}.${module_name}.service.impl;
+package com.${package_name}.${module_name}.service.service.impl;
 <%!
 	import utils
 %>
