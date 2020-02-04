@@ -28,9 +28,9 @@ import com.${package_name}.${module_name}.service.service.${utils.firstUpower(mo
  * 
  */
 @RestController
-##@RequestMapping("/op/v1/${module_name}")
+@RequestMapping("${actions[0].get_root_path()}")
 @Slf4j
-public class ${utils.firstUpower(module_name)}AdminController {
+public class Admin${utils.firstUpower(module_name)}Controller {
 
 	@Autowired
 	private ${utils.firstUpower(module_name)}QueryService ${module_name}QueryService;

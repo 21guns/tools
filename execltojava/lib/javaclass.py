@@ -12,6 +12,8 @@ class Java_Class(entity.Action):
 		for n in self.get_path_variable_name():
 			params += '@PathVariable Long ' + n +', '
 		if self.has_request():
+			if self.http_method != 'GET':
+				params += '@RequestBody '
 			params += self.class_name + 'DTO dto'
 		if params.endswith(', '):
 			params = params[:-2]
@@ -19,10 +21,16 @@ class Java_Class(entity.Action):
 			params += ', PageData pagination'
 		return params
 	def get_controller_method_invoke_params(self):
-		return self.get_controller_method_params().replace('@PathVariable Long ','').replace(self.class_name + 'DTO ' , '').replace('PageData ' , '')
+		return self.get_controller_method_params().replace('@PathVariable Long ','')\
+			.replace(self.class_name + 'DTO ' , '')\
+			.replace('PageData ' , '').replace('@RequestBody ','')
 	
 	def get_controller_mapping(self):
-		return '@' + utils.firstUpower(self.http_method) + 'Mapping("'+self.url+'")'
+		mapping = '@' + utils.firstUpower(self.http_method) + 'Mapping'
+		url = self.url.replace(self.get_root_path(),'')
+		if len(url) > 0:
+			mapping += '("'+url+'")'
+		return mapping
 
 	def get_service_method_params(self):
 		params = ''

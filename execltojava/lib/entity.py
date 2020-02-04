@@ -105,7 +105,8 @@ ACTION_RESPONSE_TYPE = {
 }
 ACTION_REQUEST_TYPE = {
 	'PATH':'PATH',
-	'QUERY':'QUERY'
+	'QUERY':'QUERY',
+	'JSON':'JSON'
 }
 class Action(object):
 	def __init__(self, url, http_method,comment):
@@ -123,9 +124,12 @@ class Action(object):
 	def set_url(self,url):
 		# print( url.lstrip().rstrip())
 		self.url = url.lstrip().rstrip().replace('`', '')
-		self.url_path = url_path(self.url)
+		self.url_path = urlPath(self.url)
 		#/op/v1/module_name 
-		self.module_name = self.url_path.path[3]
+		self.module_name = self.url_path.module_name()
+
+	def get_root_path(self):
+		return self.url_path.root
 
 	def set_http_method(self,http_method):
 		# print( http_method.lstrip().rstrip())
@@ -161,7 +165,7 @@ class Action(object):
 
 	def is_get_id_method(self):
 		#get /ddd/{id}
-		lastUrl = self.url.split('/')[-1]
+		lastUrl = self.url_path.last_path()
 		if lastUrl.startswith('{') and self.http_method == 'GET':
 			if len(self.request_params) <= 1 :
 				# print(self.http_method,self.url,self.request_params)
@@ -189,19 +193,25 @@ class Action(object):
 		return self.url_path.path_variable_name
 
 	def __str__(self):
-		return '%s:%s request_params=%s response=%s' % ( self.http_method,self.url, self.request_params, self.response)
+		return '%s:%s request_params=%s response=%s root_path=%s' % ( self.http_method,self.url, self.request_params, self.response,self.get_root_path())
 	__repr__ = __str__
 
-class url_path(object):
+#/op/v1/module_name/xx/xx
+class urlPath(object):
 	def __init__(self, url):
 		self.url = url
 		self.path = self.url.lstrip().rstrip().split('/')
+		self.root = '/'.join(self.path[0:4])
 		self.path_variable_name = []
 		self.path_variable_index = []
 		for i,p in enumerate(self.path):
 			if p.startswith('{'):
 				self.path_variable_name.append(p.replace('{','').replace('}',''))
 				self.path_variable_index.append(i)
+
+	def module_name(self):
+		return self.path[3]
+
 	def last_path(self):
 		return self.path[-1]
 
