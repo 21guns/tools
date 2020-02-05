@@ -5,7 +5,7 @@ import utils
 
 class Field(object):
 
-	def __init__(self, name, jdbcType, type, comment, note, isId):
+	def __init__(self, name, jdbcType, type, javaType, comment, note, isId):
 		self.name = utils.convert(name,'_',False)
 		self.comment = comment
 		self.field = name
@@ -13,6 +13,7 @@ class Field(object):
 		self.isId = isId
 		self.jdbcType = jdbcType
 		self.type = type
+		self.javaType = javaType
 		if (self.jdbcType == "INT") :
 			self.jdbcType = "INTEGER"
 		elif (self.jdbcType == "BIGINT UNSIGNED"):
@@ -30,31 +31,42 @@ class Field(object):
 def read_db_field(name, jdbcType, comment, note, isId):
 	jdbcType = jdbcType.split('(')[0]
 	type = None
+	javaType = None
 	if "VARCHAR" in jdbcType:
 		type = "String"
+		javaType = "java.lang.String"
 	elif "TINYINT" in jdbcType:
 		type = "Byte"
+		javaType = "java.lang.Byte"
 	elif "DATETIME" in jdbcType:
 		type = "LocalDateTime"
+		javaType = "java.time.LocalDateTime"
 	elif "DATE" in jdbcType:
 		type = "LocalDate"
+		javaType = "java.time.LocalDate"
 	elif "DECIMAL" in jdbcType:
 		type = "BigDecimal"
+		javaType = "java.math.BigDecimal"
 	elif "INT" == jdbcType:
 		type = "Integer"
+		javaType = "java.lang.Integer"
 	elif "INT" == jdbcType:
 		type = "Integer"
+		javaType = "java.lang.Integer"
 	elif "BIGINT UNSIGNED" == jdbcType:
 		type = "Long"
+		javaType = "java.lang.Long"
 	elif "BIGINT" == jdbcType:
 		type = "Long"
+		javaType = "java.lang.Long"
 	elif "JSON" == jdbcType:
 		type = "HashMap"
+		javaType = "java.util.HashMap"
 	else:
 		type = None
 		print(name, jdbcType)
 	if type is not None :
-		return Field(name, jdbcType, type, comment, note, isId)
+		return Field(name, jdbcType, type, javaType, comment, note, isId)
 	return None
 
 def read_interface_field(name, type, comment):
@@ -64,7 +76,7 @@ def read_interface_field(name, type, comment):
 		return None
 	if type == 'Number':
 		type = 'Integer'
-	return Field(name, '', type, comment, '', False)
+	return Field(name, '', type, '', comment, '', False)
 
 class Table(object):
 	def __init__(self, name, comment):

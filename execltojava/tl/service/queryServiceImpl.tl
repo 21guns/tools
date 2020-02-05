@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import com.${package_name}.${module_name}.service.service.${utils.firstUpower(module_name)}QueryService;
-import com.guns21.data.domain.result.MessageResult;
 import com.guns21.data.domain.result.PageData;
-import com.guns21.common.util.ObjectUtils;
 % for a in actions:
     % if a.is_get_method():
         % if a.has_request():
@@ -31,9 +29,9 @@ import com.${package_name}.${module_name}.api.vo.${a.class_name}VO;
 public class ${utils.firstUpower(module_name)}QueryServiceImpl implements ${utils.firstUpower(module_name)}QueryService {
 
     //@Autowired Mapper
-    
     % for a in actions:
         % if a.is_get_method() :
+        
     /**
      * ${a.comment}
      */

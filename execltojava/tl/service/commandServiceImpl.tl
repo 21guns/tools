@@ -24,7 +24,6 @@ public class ${utils.firstUpower(module_name)}CommandServiceImpl implements ${ut
 
 	@Autowired
 	private ${utils.firstUpower(module_name)}Repository ${module_name}Repository;
-
 	% for a in actions:
 		% if not a.is_get_method() :
 		

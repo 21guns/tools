@@ -19,7 +19,6 @@ import com.${package_name}.${module_name}.api.vo.${a.class_name}VO;
 % endfor
 
 public interface ${utils.firstUpower(module_name)}QueryService {
-
 	% for a in actions:
 		% if a.is_get_method() :
 		

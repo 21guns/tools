@@ -1,10 +1,5 @@
 package com.${package_name}.${module_name}.controller;
 
-import java.util.Objects;
-
-import com.guns21.data.domain.result.MessageResult;
-import com.guns21.data.domain.result.PageData;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import com.${package_name}.${module_name}.api.dto.${a.class_name}DTO;
 	% endif
 % endfor
+import com.guns21.data.domain.result.MessageResult;
+import com.guns21.data.domain.result.PageData;
 
 /**
  * 

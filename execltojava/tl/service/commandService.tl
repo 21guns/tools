@@ -10,7 +10,6 @@ import com.${package_name}.${module_name}.api.dto.${a.class_name}DTO;
 % endfor
 
 public interface ${utils.firstUpower(module_name)}CommandService {
-
 	% for a in actions:
 		% if not a.is_get_method() :
 		

@@ -13,7 +13,8 @@ import com.${package_name}.${module_name}.api.dto.${a.class_name}DTO;
 
 @Repository
 public class ${utils.firstUpower(module_name)}RepositoryImpl implements ${utils.firstUpower(module_name)}Repository {
-	
+
+	//@Autowired Mapper
     % for a in actions:
         % if not a.is_get_method() :
         

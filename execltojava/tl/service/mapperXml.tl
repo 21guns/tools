@@ -65,12 +65,18 @@
 		${',\n\t\t'.join(colums_as) }
   	</sql>
 
-    <select id="selectByPrimaryKey" resultMap="${class_name}ResultMap">
+% if table.has_id() :
+    <select id="selectByPrimaryKey" parameterType="${table.id_field.javaType}" resultMap="${class_name}ResultMap">
         SELECT
         <include refid="columns" />
         FROM ${table_name}
-        WHERE id = #{id}
+        WHERE id = #{id,jdbcType=${table.id_field.jdbcType}}
     </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM ${table_name} WHERE id = #{id,jdbcType=${table.id_field.jdbcType}}
+    </delete>
+% endif
 
     <insert id="insert" parameterType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
         INSERT INTO ${table_name} (<include refid="columns" />)
@@ -95,6 +101,7 @@
 			% endfor
     	</trim>
 	</insert>
+
 	<update id="updateByPrimaryKey" parameterType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
 	    UPDATE institution
 	    <set>

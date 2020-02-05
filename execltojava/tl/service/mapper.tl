@@ -19,10 +19,10 @@ public interface ${class_name}Mapper {
 
     int updateByPrimaryKey(${class_name}DO record);
     
-    % if table.has_id() :
+% if table.has_id() :
     Optional<${class_name}VO> selectByPrimaryKey(${id_Field.type} ${id_Field.name});
 
-    ##int deleteByPrimaryKey(${id_Field.type} ${id_Field.name});
-    % endif
+    int deleteByPrimaryKey(${id_Field.type} ${id_Field.name});
+% endif
 
 }
