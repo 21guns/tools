@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 for file in $(ls .)
 do
  if [[ $file != "release.sh" && $file != "gl.sh" ]]

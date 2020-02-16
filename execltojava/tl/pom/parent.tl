@@ -241,7 +241,7 @@
 				<maven.compiler.source>11</maven.compiler.source>
 				<maven.compiler.target>11</maven.compiler.target>
 				<maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
-				<lcl.version>0.0.1-SNAPSHOT</lcl.version>
+				<releases.version>0.0.1-SNAPSHOT</releases.version>
 			</properties>
 		</profile>
 		<profile>
@@ -256,7 +256,7 @@
 				<maven.compiler.source>11</maven.compiler.source>
 				<maven.compiler.target>11</maven.compiler.target>
 				<maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
-				<lcl.version>v1.0.0</lcl.version>
+				<releases.version>v1.0.0</releases.version>
 			</properties>
 		</profile>
 		<profile>
@@ -271,7 +271,7 @@
 				<maven.compiler.source>11</maven.compiler.source>
 				<maven.compiler.target>11</maven.compiler.target>
 				<maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
-				<lcl.version>v1.0.0</lcl.version>
+				<releases.version>v1.0.0</releases.version>
 			</properties>
 		</profile>
 
