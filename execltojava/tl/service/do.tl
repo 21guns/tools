@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -76,5 +78,9 @@ public class ${class_name} implements Serializable {
 	%endif
 % endfor
 
+    @Mapper
+    public interface  ${class_name}Transformer {
+         ${class_name}Transformer INSTANCE = Mappers.getMapper( ${class_name}Transformer.class);
 
+    }
 }
