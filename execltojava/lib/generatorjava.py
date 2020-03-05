@@ -14,29 +14,33 @@ import utils
 java_src = '/src/main/java'
 resource_src = '/src/main/resources/'
 
-def generate_enum_class(class_name,class_comment,fields,module_name,table_name,package_name,api):
-	for field in fields:
+def generate_enum_class(workspace_root, package_name, table):
+	package_dir =package_name.replace('.', '/')
+	module_name =table.module_name
+	api_root_dir = workspace_root + module_name+'/api'
+	api_dir = api_root_dir+java_src+'/com/'+package_dir+'/'+module_name+'/api/'
+	for field in table.fields:
 		if field.name in ['type','status']:
 			enums = []
-			string_list = str(field.note).split('、')
+			string_list = str(field.note).split(',')
 			if len(string_list) > 0:
 				for n in string_list:
 					# if  len(n) >0:
-					string_list = str(n).split('：')
+					string_list = str(n).split(':')
 					if len(string_list) ==2: 
-						f = entity.read_field(string_list[0], string_list[1], '', '',False)
+						f = read_db_field(string_list[0], string_list[1], '', '',False)
 						if f is not None:
 							enums.append(f)
 					else:
 						print(string_list)
 
-			enum_class_name = class_name+field.name[0].upper() + field.name[1:]
+			enum_class_name = table.entity_name+field.name[0].upper() + field.name[1:]
 			mapperTemplate = Template(filename='./enum.tl')
 			buf = StringIO()
-			ctx = Context(buf, class_name=enum_class_name, class_comment=class_comment, enums=enums,module_name=module_name, package_name=package_name)
+			ctx = Context(buf, table=table,module_name=module_name,package_name=package_name,class_name=enum_class_name, enums=enums)
 			mapperTemplate.render_context(ctx)
 			# print(buf.getvalue())
-			dto_dir = api+'enums/'
+			dto_dir = api_dir+'enums/'
 			if not os.path.exists(dto_dir):
 				os.makedirs(dto_dir)
 			f = open(dto_dir + enum_class_name+'Enum.java', 'w')
@@ -353,6 +357,7 @@ def write_projects(workspace_root, package_name, tables,actions):
 		generate_do(workspace_root, package_name,t)
 		generate_mapper_class(workspace_root, package_name,t)
 		generate_mapper_xml(workspace_root, package_name,t)
+		generate_enum_class(workspace_root, package_name,t)
 	for x in actions:
 		write_module(workspace_root, package_name, x.module_name)
 		write_api(workspace_root, package_name,x)
