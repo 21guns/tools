@@ -120,6 +120,7 @@ ACTION_REQUEST_TYPE = {
 	'QUERY':'QUERY',
 	'JSON':'JSON'
 }
+
 class Action(object):
 	def __init__(self, url, http_method,comment):
 		self.url = url
@@ -236,3 +237,8 @@ class urlPath(object):
 	def __str__(self):
 		return '%s:%s request_params=%s response=%s' % ( self.http_method,self.url, self.request_params, self.response)
 	__repr__ = __str__
+
+class enum(object):
+	def __init__(self, name,comment):
+		self.name = name.lstrip().rstrip()
+		self.comment = comment.lstrip().rstrip()

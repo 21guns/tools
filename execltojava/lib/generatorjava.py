@@ -26,9 +26,10 @@ def generate_enum_class(workspace_root, package_name, table):
 			if len(string_list) > 0:
 				for n in string_list:
 					# if  len(n) >0:
+					# print(string_list)
 					string_list = str(n).split(':')
 					if len(string_list) ==2: 
-						f = read_db_field(string_list[0], string_list[1], '', '',False)
+						f = enum(string_list[0],string_list[1])
 						if f is not None:
 							enums.append(f)
 					else:
@@ -37,6 +38,7 @@ def generate_enum_class(workspace_root, package_name, table):
 			enum_class_name = table.entity_name+field.name[0].upper() + field.name[1:]
 			mapperTemplate = Template(filename='./enum.tl')
 			buf = StringIO()
+			print(enums)
 			ctx = Context(buf, table=table,module_name=module_name,package_name=package_name,class_name=enum_class_name, enums=enums)
 			mapperTemplate.render_context(ctx)
 			# print(buf.getvalue())
