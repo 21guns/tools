@@ -74,13 +74,29 @@ def generate_do(workspace_root, package_name, table):
 	vo_dir = api_dir+'vo/'
 	if not os.path.exists(vo_dir):
 		os.makedirs(vo_dir)
-	mapperTemplate = Template(filename='./tl/api/fromDo.tl')
+	mapperTemplate = Template(filename='./tl/api/voCopyDO.tl')
 	buf = StringIO()
 	ctx = Context(buf, table=table,module_name=module_name,package_name=package_name,class_name=class_name)
 	mapperTemplate.render_context(ctx)
 	f = open(vo_dir + class_name+'.java', 'w')
 	f.write(buf.getvalue())
 	f.close()
+
+	#table DTO
+	if True :
+		class_name = table.entity_name+'DTO'
+		api_root_dir = workspace_root + module_name+'/api'
+		api_dir = api_root_dir+java_src+'/com/'+package_dir+'/'+module_name+'/api/'
+		vo_dir = api_dir+'dto/'
+		if not os.path.exists(vo_dir):
+			os.makedirs(vo_dir)
+		mapperTemplate = Template(filename='./tl/api/dtoCopyDO.tl')
+		buf = StringIO()
+		ctx = Context(buf, table=table,module_name=module_name,package_name=package_name,class_name=class_name)
+		mapperTemplate.render_context(ctx)
+		f = open(vo_dir + class_name+'.java', 'w')
+		f.write(buf.getvalue())
+		f.close()
 
 def generate_mapper_class(workspace_root, package_name, table):
 	package_dir =package_name.replace('.', '/')
