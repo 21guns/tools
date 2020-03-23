@@ -20,6 +20,8 @@ import java.util.Objects;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 @Setter
 @Getter
 public class ${class_name} implements Serializable {

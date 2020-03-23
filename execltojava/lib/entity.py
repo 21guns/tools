@@ -1,11 +1,9 @@
-
-
 import re
 import utils
 
 class Field(object):
 
-	def __init__(self, name, jdbcType, type, javaType, comment, note, isId):
+	def __init__(self, name, jdbcType, type, javaType, databaseType, comment, note, isId):
 		self.name = utils.convert(name,'_',False)
 		self.comment = comment
 		self.field = name
@@ -14,6 +12,7 @@ class Field(object):
 		self.jdbcType = jdbcType
 		self.type = type
 		self.javaType = javaType
+		self.databaseType = databaseType
 		if (self.jdbcType == "INT") :
 			self.jdbcType = "INTEGER"
 		elif (self.jdbcType == "BIGINT UNSIGNED"):
@@ -29,6 +28,7 @@ class Field(object):
 	__repr__ = __str__
 
 def read_db_field(name, jdbcType, comment, note, isId):
+	databaseType = jdbcType
 	jdbcType = jdbcType.split('(')[0]
 	type = None
 	javaType = None
@@ -66,7 +66,7 @@ def read_db_field(name, jdbcType, comment, note, isId):
 		type = None
 		print(name, jdbcType)
 	if type is not None :
-		return Field(name, jdbcType, type, javaType, comment, note, isId)
+		return Field(name, jdbcType, type, javaType, databaseType, comment, note, isId)
 	return None
 
 def read_interface_field(name, type, comment):
@@ -76,7 +76,7 @@ def read_interface_field(name, type, comment):
 		return None
 	if type == 'Number':
 		type = 'Integer'
-	return Field(name, '', type, '', comment, '', False)
+	return Field(name, '', type, '', '', comment, '', False)
 
 class Table(object):
 	def __init__(self, name, comment):

@@ -46,7 +46,7 @@ def generate_enum_class(workspace_root, package_name, table):
 				os.makedirs(dto_dir)
 			f = open(dto_dir + enum_class_name+'Enum.java', 'w')
 			f.write(buf.getvalue())
-			f.close()
+			f.close()	
 
 def generate_do(workspace_root, package_name, table):
 	package_dir =package_name.replace('.', '/')
@@ -146,6 +146,16 @@ def write_parent(workspace_root, package_name):
 	ctx = Context(buf, package_name=package_name)
 	mapperTemplate.render_context(ctx)
 	f = open(parent_dir+'pom.xml', 'w')
+	f.write(buf.getvalue())
+	f.close()
+
+def generate_sql(workspace_root, tables):
+
+	mapperTemplate = Template(filename='./tl/sql.tl',input_encoding='utf-8')
+	buf = StringIO()
+	ctx = Context(buf, tables=tables)
+	mapperTemplate.render_context(ctx)
+	f = open(workspace_root+'database.sql', 'a')
 	f.write(buf.getvalue())
 	f.close()
 
@@ -369,6 +379,7 @@ def write_module(workspace_root, package_name, module_name):
 
 def write_projects(workspace_root, package_name, tables,actions):
 	write_parent(workspace_root,package_name )
+	generate_sql(workspace_root,tables)
 	for t in tables:
 		write_module(workspace_root, package_name, t.module_name)
 		generate_do(workspace_root, package_name,t)
