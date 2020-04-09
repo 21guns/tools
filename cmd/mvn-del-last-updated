@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+repo_root=$HOME/.m2/repository
+echo $#
+if [ $# = 1 ]
+then
+	find $1 -name "*.lastUpdated"  | xargs rm -rf
+else
+	find $repo_root -name "*.lastUpdated" | xargs rm -rf
+fi
