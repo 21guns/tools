@@ -8,30 +8,30 @@ then
 	v=$1
 	echo "输入版本号为:$v,确认 y,取消 n"
 	read e
-	if [ $e == "y" ]
+	if [ $e = "y" ]
 	then
-		url='https://gitlab.creditcloud.com'
-		token='5pP_Xkq67rrqQ86aen9H'
-		dirs=( 'cms' 'event' 'promotion' 'timed-task' 'docking' 'notify' 'query' 'warehouse' 'logistics' 'order' 'upload' 'admin' 'financial-scheme' 'server' 'common' 'admin-user' 'user' 'store' 'leads' 'vehicle')
+		url='https://gitlab.ktjr.com/'
+		token='RKTa6-wbU3UWQG7wWCc6'
+		dirs=( 'ceres' 'loan' 'cases' 'support' 'collection' 'open' 'risk' 'user' 'admin' 'server')
 		for loop in ${dirs[@]}
 		do
-			id=`curl -s -X GET -H "PRIVATE-TOKEN: $token" $url/api/v3/projects/ddhc%2F$loop | awk -F '[:,]' '/id/{print$2}'`
+			id=`curl -s -X GET -H "PRIVATE-TOKEN: $token" $url/api/v4/projects/loan-collection%2Fserver%2F$loop | awk -F '[:,]' '/id/{print$2}'`
 			echo "get project($id) for $loop"
-			#判断master和uat是否由变更
-			commit=`curl -s -X GET -H "PRIVATE-TOKEN: $token" $url/api/v3/projects/$id/repository/compare\?from\=master\&to\=uat|awk -F '[:,]' '/commit/{print$2}'`
+			#判断master和uat是否由变Tuple更
+			commit=`curl -s -X GET -H "PRIVATE-TOKEN: $token" $url/api/v4/projects/$id/repository/compare\?from\=uat\&to\=master|awk -F 'diffs":' '{print$2}'|awk -F ',' '{print$1}'`
 			echo "$commit"
-			if [ $commit != "null" ]
+			if [ $commit != "[]" ]
 			then  
-				mrid=`curl -s -X POST -H "Content-Type:application/json" -H "PRIVATE-TOKEN: $token" --data '{"id": "$id","target_branch": "master","source_branch": "uat",  "title": "'$v'"}' $url/api/v3/projects/$id/merge_requests | awk -F '[:,]' '/id/{print$2}'`
+				mrid=`curl -s -X POST -H "Content-Type:application/json" -H "PRIVATE-TOKEN: $token" --data '{"id": "$id","target_branch": "master","source_branch": "uat",  "title": "'$v'"}' $url/api/v4/projects/$id/merge_requests | awk -F '[:,]' '{print$4}'`
 				echo "create mr($mrid) for $loop"
 
 				echo "accept mr for $loop"
-				curl -s -X PUT -H "Content-Type:application/json" -H "PRIVATE-TOKEN: $token" --data '{"id": "$id","merge_request_id": "$mrid"}' $url/api/v3/projects/$id/merge_requests/$mrid/merge
+				curl -s -X PUT -H "Content-Type:application/json" -H "PRIVATE-TOKEN: $token" --data '{"id": "$id","merge_request_id": "$mrid"}' $url/api/v4/projects/$id/merge_requests/$mrid/merge
 			else 
 				echo "$loop hasn't changes"
 			fi
 		        echo "create tag for $loop \n"
-			curl -s -X POST -H "Content-Type:application/json" -H "PRIVATE-TOKEN: $token" --data '{"id": "$id","tag_name": "'$v'","ref":"master"}' $url/api/v3/projects/$id/repository/tags
+			curl -s -X POST -H "Content-Type:application/json" -H "PRIVATE-TOKEN: $token" --data '{"id": "$id","tag_name": "'$v'","ref":"master"}' $url/api/v4/projects/$id/repository/tags
 		done
 		echo "yeye successfull!!"
 	fi

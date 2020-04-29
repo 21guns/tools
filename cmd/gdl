@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
-for file in $(ls .)
+# 只列出当前目录下的目录
+for file in $(ls -d */)
 do
  if [[ $file != "release.sh" && $file != "gl.sh" ]]
  then
