@@ -60,7 +60,7 @@
 			<dependency>
 				<groupId>redis.clients</groupId>
 				<artifactId>jedis</artifactId>
-				<version>2.9.0</version>
+                <version>3.1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mybatis</groupId>
@@ -70,13 +70,7 @@
 			<dependency>
 				<groupId>org.mybatis.spring.boot</groupId>
 				<artifactId>mybatis-spring-boot-starter</artifactId>
-				<version>2.0.1</version>
-			</dependency>
-			<!--mapper-->
-			<dependency>
-				<groupId>tk.mybatis</groupId>
-				<artifactId>mapper-spring-boot-starter</artifactId>
-				<version>2.1.5</version>
+				<version>2.1.1</version>
 			</dependency>
 			<!--pagehelper-->
 			<dependency>

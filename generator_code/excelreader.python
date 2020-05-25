@@ -66,7 +66,7 @@ for sheet_name in worksheets:
 		# 		write_java_file(class_name,class_comment,fields,id_Field,module_name,table_name)
 		# except IndexError as e:
 		# 	print('IndexError:', e)
-workspace_root='/Volumes/data/Develop/workspace/sft/'
+workspace_root='/Users/jliu/Develop/workspace/sft/'
 generatorjava.write_projects(workspace_root,'sifangting',tables, actions)
 
 
