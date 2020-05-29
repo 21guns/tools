@@ -103,7 +103,7 @@
 	</insert>
 
 	<update id="updateByPrimaryKey" parameterType="com.${package_name}.${module_name}.service.entity.${class_name}DO">
-	    UPDATE institution
+	    UPDATE ${table_name}
 	    <set>
 	       % for index in  range(len(fields)):
 	        ${fields[index].field }= #{${fields[index].name}, jdbcType=${fields[index].jdbcType}},

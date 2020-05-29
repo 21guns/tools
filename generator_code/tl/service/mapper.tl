@@ -11,16 +11,16 @@ import java.util.Optional;
 
 public interface ${class_name}Mapper {
 
-    int insert(${class_name}DO record);
+    Integer insert(${class_name}DO record);
 
-    int insertSelective(${class_name}DO record);
+    Integer insertSelective(${class_name}DO record);
 
-    int updateByPrimaryKeySelective(${class_name}DO record);
+    Integer updateByPrimaryKeySelective(${class_name}DO record);
 
-    int updateByPrimaryKey(${class_name}DO record);
+    Integer updateByPrimaryKey(${class_name}DO record);
     
 % if table.has_id() :
-    int deleteByPrimaryKey(${id_Field.type} ${id_Field.name});
+    Integer deleteByPrimaryKey(${id_Field.type} ${id_Field.name});
 
     Optional<${class_name}VO> selectByPrimaryKey(${id_Field.type} ${id_Field.name});
 % endif

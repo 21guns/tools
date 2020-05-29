@@ -18,7 +18,7 @@ then
 			id=`curl -s -X GET -H "PRIVATE-TOKEN: $token" $url/api/v4/projects/loan-collection%2Fserver%2F$loop | awk -F '[:,]' '/id/{print$2}'`
 			echo "get project($id) for $loop"
 			#判断master和uat是否由变Tuple更
-			commit=`curl -s -X GET -H "PRIVATE-TOKEN: $token" $url/api/v4/projects/$id/repository/compare\?from\=uat\&to\=master|awk -F 'diffs":' '{print$2}'|awk -F ',' '{print$1}'`
+			commit=`curl -s -X GET -H "PRIVATE-TOKEN: $token" $url/api/v4/projects/$id/repository/compare\?from\=master\&to\=uat|awk -F 'diffs":' '{print$2}'|awk -F ',' '{print$1}'`
 			echo "$commit"
 			if [ $commit != "[]" ]
 			then  

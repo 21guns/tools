@@ -1,6 +1,7 @@
-#!/bin/bash
-# 使用方式：sh sqlAddAs.sh c '' 'id, type, no, name, picture, price, original_price, discount_rate, activity_price,document_id, shop_id, status, gmt_created, gmt_modified, note'
-if [ $# == 3 ]
+#!/usr/bin/env zsh
+# chmod a+x 
+# 使用方式：sql-as c '' 'id, type, no, name, picture, price, original_price, discount_rate, activity_price,document_id, shop_id, status, gmt_created, gmt_modified, note'
+if [ $# = 3 ]
 then
     str=$3
     table_alise=$1

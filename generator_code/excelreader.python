@@ -18,7 +18,7 @@ def read_db_field(worksheet):
 	note_index = 9
 	# print(ss)
 	return entity.read_db_field(worksheet.cell_value(rown,cloumn_index), 
-	worksheet.cell_value(rown,jdbcType_index), worksheet.cell_value(rown,cloumn_index),
+		worksheet.cell_value(rown,jdbcType_index), worksheet.cell_value(rown,comment_index),
 		worksheet.cell_value(rown,note_index), worksheet.cell_value(rown,cloumn_index) == 'id')
 
 
