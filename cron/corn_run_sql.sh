@@ -1,5 +1,8 @@
 #!/bin/bash
 # 获取当前日期
+# 1.编辑crontab -e
+#   0 0 * * * sh /root/corn/corn_run_sql.sh
+# 2. service crond restart
 DATE=`date +%Y%m%d`
 
 cp ermas_case_main_daily.sql run.sql
