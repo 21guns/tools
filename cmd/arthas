@@ -1,2 +1,2 @@
 #!/usr/bin/env zsh
-java -jar /data/develop/tools/arthas-boot.jar
+java -jar /Users/jliu/Develop/tools/arthas-boot.jar
