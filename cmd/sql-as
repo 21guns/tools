@@ -7,8 +7,8 @@ then
     table_alise=$1
     column_allise=$2
     #echo $str |awk -F, '{print $1}'
-
-    mails=$(echo $str | tr "," "\n")
+    mails=(`echo $str | tr "," " "`)
+    # mails=(${str//,/})
     RE=""
     temp=""
 
