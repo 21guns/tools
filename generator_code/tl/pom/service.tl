@@ -34,10 +34,6 @@
 			<artifactId>mapstruct</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct-processor</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.guns21</groupId>
 			<artifactId>mybatis</artifactId>
 		</dependency>

@@ -36,7 +36,7 @@ def generate_enum_class(workspace_root, package_name, table):
 						print(string_list)
 
 			enum_class_name = table.entity_name+field.name[0].upper() + field.name[1:]
-			mapperTemplate = Template(filename='./enum.tl')
+			mapperTemplate = Template(filename='./tl/api/enum.tl')
 			buf = StringIO()
 			ctx = Context(buf, table=table,module_name=module_name,package_name=package_name,class_name=enum_class_name, enums=enums)
 			mapperTemplate.render_context(ctx)
@@ -74,7 +74,7 @@ def generate_do(workspace_root, package_name, table):
 	vo_dir = api_dir+'vo/'
 	if not os.path.exists(vo_dir):
 		os.makedirs(vo_dir)
-	mapperTemplate = Template(filename='./tl/api/voCopyDO.tl')
+	mapperTemplate = Template(filename='./tl/api/tableVO.tl')
 	buf = StringIO()
 	ctx = Context(buf, table=table,module_name=module_name,package_name=package_name,class_name=class_name)
 	mapperTemplate.render_context(ctx)
@@ -90,7 +90,7 @@ def generate_do(workspace_root, package_name, table):
 		vo_dir = api_dir+'dto/'
 		if not os.path.exists(vo_dir):
 			os.makedirs(vo_dir)
-		mapperTemplate = Template(filename='./tl/api/dtoCopyDO.tl')
+		mapperTemplate = Template(filename='./tl/api/tableDTO.tl')
 		buf = StringIO()
 		ctx = Context(buf, table=table,module_name=module_name,package_name=package_name,class_name=class_name)
 		mapperTemplate.render_context(ctx)

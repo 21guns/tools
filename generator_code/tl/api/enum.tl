@@ -1,9 +1,10 @@
 package com.${package_name}.${table.module_name}.api.enums;
 
+import com.guns21.common.enums.ValuableEnum;
 import lombok.Getter;
 
 @Getter
-public enum ${class_name}Enum {
+public enum ${class_name}Enum implements ValuableEnum {
 	% if len(enums)==0 :
 	;
 	% endif 

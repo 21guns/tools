@@ -27,7 +27,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
+% for a in table.fields:
+	% if a.name in ['type','status']:
+		<% enumType = table.entity_name+a.name[0].upper() + a.name[1:] + "Enum" %>
+import com.${package_name}.${module_name}.api.enums.${enumType};
+	% endif
+% endfor
 /**
  * ${table.comment}
  */
@@ -59,6 +64,11 @@ public class ${class_name} implements Serializable {
 % endif 
 
 % for a in table.fields:
+	<% 
+	enumType = a.type
+	if a.name in ['type','status']:
+		enumType = table.entity_name+a.name[0].upper() + a.name[1:] + "Enum"
+	%>
 	% if hasId:
 		% if a.name not in ["id","gmt_created","gmt_modified"]:
 
@@ -66,7 +76,7 @@ public class ${class_name} implements Serializable {
  	 * ${a.comment}
  	 * ${a.note}
 	 */
-	private ${a.type} ${a.name};
+	private ${enumType} ${a.name};
 		% endif
 	% else :
 
@@ -74,7 +84,7 @@ public class ${class_name} implements Serializable {
  	 * ${a.comment}
  	 * ${a.note}
 	 */
-	private ${a.type} ${a.name};
+	private ${enumType} ${a.name};
 	%endif
 % endfor
 
