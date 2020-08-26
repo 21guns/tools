@@ -108,6 +108,11 @@ class Table(object):
 
 def read_table(line, space_character):
 	str = line.lstrip().rstrip().split(space_character)
+	if (len(str) > 2):
+		# print(str)
+		return 	Table(str[len(str)-1],str[0])
+	if (len(str) < 2):
+		print(str)
 	return Table(str[1],str[0])
 
 ACTION_RESPONSE_TYPE = {

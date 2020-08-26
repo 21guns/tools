@@ -32,7 +32,7 @@ def read_interface_field(str,space_character):
 	comment = ss[4] if len(ss[4])>0 else ss[3] # (lambda :ss[4],lambda : ss[3])[len(ss[4]) > 0]() 
 	return entity.read_interface_field(ss[1], ss[2],comment)
 #表结构
-table_file = open('./template/设计规范/数据结构.md', 'r')
+table_file = open('/Users/jliu/Develop/workspace/ktjr/mediation/doc/技术文档/系统设计/数据表结构.md', 'r')
 tables = []
 current_table = None
 current_module_name = ''
@@ -42,6 +42,9 @@ for l in table_file.readlines():
 		current_module_name = line.split(' ')[1]
 	if line.count('#') == 3:# ### 邮件模板配置表 email_notification
 		line = line.replace('#','').lstrip().rstrip()
+		if (len(line) == 0):
+			print(l)
+			continue
 		current_table = entity.read_table(line, ' ')
 		current_table.set_module_name(current_module_name)
 		tables.append(current_table)
@@ -102,9 +105,10 @@ for i,l in enumerate(lines):
 # 	print(k,list(g))
 
 # print(current_table)
-workspace_root='/Volumes/data/Develop/workspace/ktjr/loan-collection1/'
+workspace_root='/Users/jliu/Develop/workspace/ktjr/mediation/'
 # write_parent(workspace_root,'ktjr.lcl')
 # write_project(workspace_root,'ktjr.lcl',current_table, current_action)
-generatorjava.write_projects(workspace_root,'kk.lcl',tables, actions)
+actions = []
+generatorjava.write_projects(workspace_root,'creditcloud',tables, actions)
 
 

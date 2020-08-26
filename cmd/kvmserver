@@ -1,0 +1,19 @@
+#!/bin/bash
+#Program:
+#       堡垒机
+#author: yinshixiong
+
+
+function kvmServer (){
+    ssh -p 2222 liujun@10.132.1.10
+}
+
+function main (){
+    case $1 in
+
+kvm)
+    kvmServer
+;;
+esac
+}
+    main $*
