@@ -83,7 +83,7 @@ def generate_do(workspace_root, package_name, table):
 	f.close()
 
 	#table DTO
-	if True :
+	if False :
 		class_name = table.entity_name+'DTO'
 		api_root_dir = workspace_root + module_name+'/api'
 		api_dir = api_root_dir+java_src+'/com/'+package_dir+'/'+module_name+'/api/'

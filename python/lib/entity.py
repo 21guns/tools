@@ -50,9 +50,6 @@ def read_db_field(name, jdbcType, comment, note, isId):
 	elif "INT" == jdbcType:
 		type = "Integer"
 		javaType = "java.lang.Integer"
-	elif "INT" == jdbcType:
-		type = "Integer"
-		javaType = "java.lang.Integer"
 	elif "BIGINT UNSIGNED" == jdbcType:
 		type = "Long"
 		javaType = "java.lang.Long"
@@ -70,11 +67,15 @@ def read_db_field(name, jdbcType, comment, note, isId):
 	return None
 
 def read_interface_field(name, type, comment):
-	if not type.isalnum() :
+	if type.startswith('-'):
 		return None
+	if type.startswith('List'):
+		type = type.replace('List','java.util.List')
+	# if not type.isalnum() : # 不是字母
+	# 	return None
 	if len(re.findall('[\u4e00-\u9fa5]',type)) > 0 :#检查是否包含汉字
 		return None
-	if type == 'Number':
+	if type.lower() == 'number':
 		type = 'Integer'
 	return Field(name, '', type, '', '', comment, '', False)
 
@@ -152,7 +153,8 @@ class Action(object):
 	def set_http_method(self,http_method):
 		# print( http_method.lstrip().rstrip())
 		self.http_method = http_method.lstrip().rstrip().replace('`', '')
-		self.class_name = utils.firstUpower(self.http_method) + utils.firstUpower(self.url_path.last_path_name())
+		self.class_name = self.get_method_name()#utils.firstUpower(self.http_method) + utils.firstUpower(self.url_path.last_path_name())
+		self.class_name = self.class_name[0].capitalize() + self.class_name[1:]
 
 	def set_module_name(self, module_name):
 		self.module_name = module_name
@@ -191,9 +193,10 @@ class Action(object):
 	def get_method_name(self):
 		method_name = self.url_path.last_path_name()
 		if method_name in ['id','no']:
-			method_name = "By" + utils.firstUpower(method_name)
+			method_name = self.url_path.after_module_name() + "By" + utils.firstUpower(method_name)
 		else:
-			method_name = utils.firstUpower(method_name)
+			method_name = self.url_path.after_module_name()
+
 		return self.http_method.lower() + method_name
 
 	def has_request(self):
@@ -222,10 +225,13 @@ class urlPath(object):
 		self.root = '/'.join(self.path[0:4])
 		self.path_variable_name = []
 		self.path_variable_index = []
+		self.path_not_variable = []
 		for i,p in enumerate(self.path):
 			if p.startswith('{'):
 				self.path_variable_name.append(p.replace('{','').replace('}',''))
 				self.path_variable_index.append(i)
+			else:
+				self.path_not_variable.append(p)
 
 	def module_name(self):
 		return self.path[3]
@@ -238,6 +244,12 @@ class urlPath(object):
 			return self.path_variable_name[-1]
 		else :
 			return self.last_path()
+
+	def path_name(self, begin, step):
+		return ''.join(map(utils.firstUpower, self.path_not_variable[begin:step]))
+
+	def after_module_name(self):
+		return self.path_name(4, len(self.path))
 
 	def __str__(self):
 		return '%s:%s request_params=%s response=%s' % ( self.http_method,self.url, self.request_params, self.response)

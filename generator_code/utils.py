@@ -1,6 +1,9 @@
 
 def firstUpower(str):
-	return str[0].capitalize() + str[1:].lower()
+	if len(str) >0:
+		return str[0].capitalize() + str[1:].lower()
+	else:
+		return ''
 
 def convert(one_string, space_character, firstUpowers = False):    #one_string:输入的字符串；space_character:字符串的间隔符，以其做为分隔标志
 	if one_string.find(space_character) == -1:

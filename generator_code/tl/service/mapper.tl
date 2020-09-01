@@ -23,6 +23,9 @@ public interface ${class_name}Mapper {
     Integer deleteByPrimaryKey(${id_Field.type} ${id_Field.name});
 
     Optional<${class_name}VO> selectByPrimaryKey(${id_Field.type} ${id_Field.name});
+
+    List<${class_name}VO> page(@Param("query") ${class_name}DTO var1, @Param("pageNum") int pageNum, @Param("pageSize") int pageSize);
+
 % endif
 
 }

@@ -16,7 +16,7 @@ public interface ${utils.firstUpower(module_name)}Repository {
 	/**
  	 * ${a.comment}
 	 */
-    int  ${a.get_method_name()}(${a.get_service_method_params()});
+    Integer  ${a.get_method_name()}(${a.get_service_method_params()});
     	% endif 
 	% endfor
 

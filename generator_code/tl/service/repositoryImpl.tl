@@ -21,7 +21,7 @@ public class ${utils.firstUpower(module_name)}RepositoryImpl implements ${utils.
     /**
      * ${a.comment}
      */
-    public int  ${a.get_method_name()}(${a.get_service_method_params()}) {
+    public Integer  ${a.get_method_name()}(${a.get_service_method_params()}) {
         //TODO
         return 0;
     } 

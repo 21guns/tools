@@ -23,8 +23,8 @@ def read_db_field(str,space_character):
 		ss[note_index], ss[cloumn_index] == 'id')
 #str值为| 字段      | 类型    | 描述                  |
 def read_interface_field(str,space_character):
-	# print(str)
 	l = line.lstrip().rstrip().split(space_character)
+	# print(l)
 	ss = []
 	for x in l:
 		x = x.lstrip().rstrip()
@@ -53,7 +53,7 @@ for l in table_file.readlines():
 		if current_table != None:
 			current_table.add_fields(f);
 #接口文档
-interfacr_filr = open('./template/设计规范/接口文档.md', 'r')
+interfacr_filr = open('/Users/jliu/Develop/workspace/ktjr/mediation/doc/技术文档/接口文档/mediation-api.md', 'r')
 actions = []
 current_action = None
 lines = interfacr_filr.readlines()
@@ -65,25 +65,26 @@ for i,l in enumerate(lines):
 	if line.startswith('###') : #接口中文名
 		current_action = javaclass.new_java_class('','', line.split(' ')[1])
 		actions.append(current_action)
-	if line.find('接口路径') != -1:#  - 接口路径: `/op/v1/institutions/search`
-		current_action.set_url(line.split(':')[-1])
-		if not current_action.url.startswith('/') :
-			print('\033[1;32;43m url is error %s and 第%d行 行内容 %s \033[0m' % (current_action.url, i,line))
-	if line.find('HTTP Method') != -1:# - HTTP Method: `GET`
-		current_action.set_http_method(line.split(':')[-1])
-		# print(current_action)
-	if line.find('请求参数格式') != -1:#  - 请求参数格式: `QUERY STRING`
-		current_action.set_request_type(line.split(':')[-1])
-	if line.find('请求参数字段') != -1:#  - 请求参数字段
-		params_type = True
-		if lines[i+1].find('|') == -1: #无参数
+	if line.startswith('-'):
+		if line.find('接口路径') != -1:#  - 接口路径: `/op/v1/institutions/search`
+			current_action.set_url(line.split(':')[-1])
+			if not current_action.url.startswith('/') :
+				print('\033[1;32;43m url is error %s and 第%d行 行内容 %s \033[0m' % (current_action.url, i,line))
+		if line.find('HTTP Method') != -1:# - HTTP Method: `GET`
+			current_action.set_http_method(line.split(':')[-1])
+			# print(current_action)
+		if line.find('请求参数格式') != -1:#  - 请求参数格式: `QUERY STRING`
+			current_action.set_request_type(line.split(':')[-1])
+		if line.find('请求参数字段') != -1:#  - 请求参数字段
+			params_type = True
+			if lines[i+1].find('|') == -1: #无参数
+				pass
+		if line.find('响应类型') != -1:#  - 响应类型
+			# print(line.split(':')[-1])
+			current_action.set_response_type(line.split(':')[-1])
 			pass
-	if line.find('响应类型') != -1:#  - 响应类型
-		# print(line.split(':')[-1])
-		current_action.set_response_type(line.split(':')[-1])
-		pass
-	if line.find('响应字段') != -1:#  - 响应字段
-		params_type = False
+		if line.find('响应字段') != -1:#  - 响应字段
+			params_type = False
 
 	if line.startswith('|'):
 		f = read_interface_field(line, '|')
@@ -94,7 +95,7 @@ for i,l in enumerate(lines):
 		if f is not None and f.name.find('字段') != -1 :
 			pass
 
-# print(actions)
+print(actions)
 
 	# if current_action != None:
 	# 	if current_action.check():
@@ -108,7 +109,7 @@ for i,l in enumerate(lines):
 workspace_root='/Users/jliu/Develop/workspace/ktjr/mediation/'
 # write_parent(workspace_root,'ktjr.lcl')
 # write_project(workspace_root,'ktjr.lcl',current_table, current_action)
-actions = []
+# actions = []
 generatorjava.write_projects(workspace_root,'creditcloud',tables, actions)
 
 
