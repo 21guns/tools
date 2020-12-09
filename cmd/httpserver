@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# chmod a+x httpserver.py
+
+import sys, os, socket
+from socketserver import ThreadingMixIn
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+
+'''
+https://blog.110.sh/2018/11/27/python3-multithreaded-http-server/
+Python3 单线程文件服务器
+这句代码执行后会绑定所有IP，8000端口，列当前目录
+如果文件很小，或者网速很快，则只需要使用这个就足够了
+python3 -m http.server
+
+Python3 多线程文件服务器
+如果文件较大或者网速较、高迸发的情况则需要使用多线程的，防止文件服务器卡死
+用法：
+# 运行在当前目录、8000端口
+python3 server.py
+# 运行在 /tmp 目录、8888端口
+python3 8888 /tmp
+
+
+'''
+HOST = socket.gethostname()
+
+class ThreadingSimpleServer(ThreadingMixIn, HTTPServer):
+    pass
+
+'''
+这里设置监听端口
+'''
+if sys.argv[1:]:
+    PORT = int(sys.argv[1])
+else:
+    PORT = 7000
+
+'''
+这里设置工作目录，如果不设置则使用脚本文件所在目录
+'''
+if sys.argv[2:]:
+    os.chdir(sys.argv[2])
+    CWD = sys.argv[2]
+else:
+    CWD = os.getcwd()
+
+server = ThreadingSimpleServer(('0.0.0.0', PORT), SimpleHTTPRequestHandler)
+print("目录：", CWD, "地址：", HOST, "端口", PORT)
+try:
+    while 1:
+        sys.stdout.flush()
+        server.handle_request()
+except KeyboardInterrupt:
+    print("\n用户终止运行.")
